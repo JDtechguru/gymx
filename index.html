@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GymX">
+<title>GymX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14161A;
+    --surface:#1C1F24;
+    --surface-2:#20242A;
+    --border:#2B2F36;
+    --text:#F0EFEA;
+    --text-muted:#8D9199;
+    --text-faint:#5C6067;
+    --accent:#C1440E;
+    --accent-soft:rgba(193,68,14,0.14);
+    --accent-strong:#E0561A;
+    --done:#7FA65C;
+    --done-soft:rgba(127,166,92,0.14);
+    --radius:10px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:env(safe-area-inset-bottom);
+    overscroll-behavior-y:none;
+  }
+  .display{font-family:'Oswald',sans-serif; font-weight:600;}
+
+  header{
+    position:sticky; top:0; z-index:10;
+    background:linear-gradient(to bottom, var(--bg) 85%, transparent);
+    padding:calc(env(safe-area-inset-top) + 18px) 20px 14px;
+  }
+  .topbar{display:flex; justify-content:space-between; align-items:flex-start;}
+  .brand{font-size:12px; letter-spacing:2.5px; color:var(--text-faint); font-weight:600;}
+  .menu-btn{
+    width:34px; height:34px; border-radius:50%;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text-muted); font-size:18px; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .day-count{font-size:44px; margin:8px 0 2px; line-height:1;}
+  .day-focus{font-size:16px; color:var(--text-muted); font-weight:500; margin-bottom:14px;}
+
+  .ticks{display:flex; gap:5px; margin-bottom:2px;}
+  .tick{flex:1; height:4px; border-radius:2px; background:var(--border);}
+  .tick.done{background:var(--done);}
+  .tick.current{background:var(--accent-strong);}
+  .progress-label{font-size:12px; color:var(--text-faint); margin-top:8px;}
+
+  main{padding:6px 20px 140px;}
+  .phase-header{
+    font-size:12.5px; color:var(--text-faint); font-weight:600;
+    margin:22px 0 8px; padding-left:2px;
+  }
+  .phase-header:first-child{margin-top:6px;}
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:13px 14px;
+    margin-bottom:8px;
+    display:flex; align-items:flex-start; gap:12px;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .card.done{background:var(--done-soft); border-color:rgba(127,166,92,0.35);}
+  .checkbox{
+    width:22px; height:22px; border-radius:50%;
+    border:2px solid var(--text-faint);
+    flex-shrink:0; margin-top:2px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:13px; color:transparent;
+  }
+  .card.done .checkbox{background:var(--done); border-color:var(--done); color:#0D1210;}
+  .card-body{flex:1; min-width:0;}
+  .ex-name{font-size:15.5px; font-weight:600; margin-bottom:3px;}
+  .card.done .ex-name{color:var(--text-muted); text-decoration:line-through; text-decoration-color:var(--text-faint);}
+  .ex-meta{font-size:13px; color:var(--text-muted);}
+  .ex-notes{font-size:12.5px; color:var(--accent-strong); margin-top:4px;}
+  .alt-toggle{
+    font-size:12px; color:var(--text-faint); margin-top:7px;
+    display:inline-block; border-bottom:1px dotted var(--text-faint);
+  }
+  .alt-box{
+    margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);
+    font-size:12.5px; color:var(--text-muted); display:none;
+  }
+  .alt-box.open{display:block;}
+  .alt-box div{margin-bottom:3px;}
+  .alt-box b{color:var(--text);}
+
+  footer{
+    position:fixed; bottom:0; left:0; right:0;
+    padding:14px 20px calc(env(safe-area-inset-bottom) + 14px);
+    background:linear-gradient(to top, var(--bg) 70%, transparent);
+  }
+  .finish-btn{
+    width:100%; padding:16px; border:none; border-radius:var(--radius);
+    font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; letter-spacing:0.5px;
+    background:var(--accent); color:#fff;
+  }
+  .finish-btn:disabled{background:var(--surface-2); color:var(--text-faint);}
+  .force-link{
+    display:block; text-align:center; margin-top:9px;
+    font-size:12.5px; color:var(--text-faint); text-decoration:underline;
+  }
+
+  .sheet-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,0.55);
+    display:none; z-index:20;
+  }
+  .sheet-overlay.open{display:block;}
+  .sheet{
+    position:fixed; left:0; right:0; bottom:0; z-index:21;
+    background:var(--surface); border-radius:16px 16px 0 0;
+    padding:22px 20px calc(env(safe-area-inset-bottom) + 22px);
+    transform:translateY(100%); transition:transform .25s ease;
+    max-height:80vh; overflow-y:auto;
+  }
+  .sheet.open{transform:translateY(0);}
+  .sheet h3{margin:0 0 14px; font-size:18px;}
+  .sheet-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:13px 0; border-bottom:1px solid var(--border);
+  }
+  .sheet-row:last-child{border-bottom:none;}
+  .sheet-btn{
+    background:var(--surface-2); border:1px solid var(--border); color:var(--text);
+    padding:8px 14px; border-radius:8px; font-size:13px; font-weight:500;
+  }
+  .day-jump{display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;}
+  .day-jump button{
+    padding:8px 13px; border-radius:8px; border:1px solid var(--border);
+    background:var(--surface-2); color:var(--text-muted); font-size:13px;
+  }
+  .day-jump button.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong);}
+  .rules-list{font-size:13px; color:var(--text-muted); line-height:1.5;}
+  .rules-list div{margin-bottom:9px;}
+  .rules-list b{color:var(--text); font-weight:600;}
+  .danger{color:#D96B4A;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <div class="brand">GYMX</div>
+    <button class="menu-btn" id="menuBtn">&#8942;</button>
+  </div>
+  <div class="day-count display" id="dayCount">DAY 1/5</div>
+  <div class="day-focus" id="dayFocus">Upper A — Strength</div>
+  <div class="ticks" id="ticks"></div>
+  <div class="progress-label" id="progressLabel">0 of 10 done</div>
+</header>
+
+<main id="main"></main>
+
+<footer>
+  <button class="finish-btn" id="finishBtn" disabled>Finish day</button>
+  <a class="force-link" id="forceLink">Finish anyway, skip the rest</a>
+</footer>
+
+<div class="sheet-overlay" id="overlay"></div>
+<div class="sheet" id="sheet">
+  <h3>Menu</h3>
+  <div class="sheet-row">
+    <span>Jump to a day</span>
+  </div>
+  <div class="day-jump" id="dayJump"></div>
+
+  <div class="sheet-row" style="margin-top:16px;">
+    <span>Reset all progress</span>
+    <button class="sheet-btn danger" id="resetBtn">Reset</button>
+  </div>
+
+  <h3 style="margin-top:24px;">Crowded gym rules</h3>
+  <div class="rules-list">
+    <div><b>2+ people waiting</b> — switch to Alternative 1 immediately.</div>
+    <div><b>Alt 1 occupied</b> — use Alternative 2.</div>
+    <div><b>Primary lift</b> — only worth waiting for if you're progressing that exact movement.</div>
+    <div><b>Accessories</b> — never queue, just switch.</div>
+    <div><b>Equipment clusters</b> — stay in one area, batch compatible movements.</div>
+    <div><b>Effort</b> — most working sets, leave 1–3 reps in reserve.</div>
+    <div><b>Knee / shoulder</b> — controlled, pain-free range always wins over load.</div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   EDIT YOUR WORKOUT HERE
+   ---------------------------------------------------------------------
+   This is the only section you (or Claude, next time) should touch to
+   change the plan. Each day is one object in DAYS[]. Each exercise is:
+   { phase, name, alt1, alt2, sets, reps, rest, notes }
+   alt1 / alt2 / rest / notes can be left as "" if not needed.
+   The app just loops through DAYS in order, 1 -> 2 -> 3 -> 4 -> 5 -> 1...
+   advancing only when a day is finished — it has no idea what the real
+   weekday is, so skipped days (rest days) don't break the sequence.
+===================================================================== */
+const DAYS = [
+  {
+    focus: "Upper A — Strength",
+    exercises: [
+      {phase:"Warm-up", name:"Treadmill / bike / cross-trainer", alt1:"", alt2:"", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace"},
+      {phase:"Strength", name:"Bench press", alt1:"Chest press machine", alt2:"DB press", sets:"3", reps:"6–8", rest:"2–3 min", notes:"If 2+ waiting, switch"},
+      {phase:"Strength", name:"Chest-supported row", alt1:"Seated cable row", alt2:"1-arm DB row", sets:"3", reps:"6–8", rest:"2–3 min", notes:""},
+      {phase:"Strength", name:"Incline DB press", alt1:"Incline machine press", alt2:"Push-ups", sets:"3", reps:"8–10", rest:"2 min", notes:""},
+      {phase:"Strength", name:"Lat pulldown", alt1:"Assisted pull-up", alt2:"Cable pulldown", sets:"3", reps:"8–10", rest:"2 min", notes:""},
+      {phase:"Accessory", name:"Cable lateral raise", alt1:"DB lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"12–15", rest:"60–90 sec", notes:""},
+      {phase:"Accessory", name:"DB curl", alt1:"Cable curl", alt2:"Hammer curl", sets:"2", reps:"10–12", rest:"60–90 sec", notes:""},
+      {phase:"Accessory", name:"Cable pressdown", alt1:"DB overhead extension", alt2:"Close-grip push-up", sets:"2", reps:"10–12", rest:"60–90 sec", notes:""},
+      {phase:"Cardio", name:"Incline walk", alt1:"Cross-trainer", alt2:"Bike", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy"},
+      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"2–3 min", rest:"", notes:""}
+    ]
+  },
+  {
+    focus: "Lower A — Quad emphasis",
+    exercises: [
+      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace"},
+      {phase:"Strength", name:"Leg press", alt1:"Hack squat", alt2:"Goblet squat", sets:"3", reps:"6–10", rest:"2–3 min", notes:"Use pain-free range"},
+      {phase:"Strength", name:"Bulgarian split squat", alt1:"Reverse lunge", alt2:"DB split squat", sets:"3", reps:"8–10/leg", rest:"2 min", notes:"Do not force painful knee range"},
+      {phase:"Strength", name:"Leg extension", alt1:"Goblet squat", alt2:"Step-up", sets:"3", reps:"10–15", rest:"90 sec", notes:""},
+      {phase:"Strength", name:"Romanian deadlift", alt1:"DB RDL", alt2:"Cable pull-through", sets:"3", reps:"8–10", rest:"2 min", notes:""},
+      {phase:"Accessory", name:"Leg curl", alt1:"Stability-ball curl", alt2:"Slider curl", sets:"2–3", reps:"10–15", rest:"60–90 sec", notes:""},
+      {phase:"Accessory", name:"Calf machine", alt1:"Leg-press calf raise", alt2:"DB calf raise", sets:"3", reps:"10–15", rest:"60–90 sec", notes:""},
+      {phase:"Core", name:"Cable crunch", alt1:"Dead bug", alt2:"Plank", sets:"2–3", reps:"Controlled sets", rest:"60 sec", notes:""},
+      {phase:"Cardio", name:"Incline walk", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy"},
+      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"2–3 min", rest:"", notes:""}
+    ]
+  },
+  {
+    focus: "Upper B — Hypertrophy",
+    exercises: [
+      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace"},
+      {phase:"Hypertrophy", name:"Lat pulldown", alt1:"Assisted pull-up", alt2:"Cable pulldown", sets:"3", reps:"8–12", rest:"2 min", notes:""},
+      {phase:"Hypertrophy", name:"Machine chest press", alt1:"DB press", alt2:"Push-ups", sets:"3", reps:"8–12", rest:"2 min", notes:""},
+      {phase:"Hypertrophy", name:"Seated cable row", alt1:"Chest-supported row", alt2:"DB row", sets:"3", reps:"10–12", rest:"90–120 sec", notes:""},
+      {phase:"Hypertrophy", name:"Incline DB press", alt1:"Incline machine", alt2:"Push-ups", sets:"2–3", reps:"10–12", rest:"90–120 sec", notes:""},
+      {phase:"Accessory", name:"Cable lateral raise", alt1:"DB lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"12–20", rest:"60–90 sec", notes:""},
+      {phase:"Accessory", name:"Reverse pec deck", alt1:"Cable rear-delt fly", alt2:"DB rear-delt fly", sets:"3", reps:"12–20", rest:"60–90 sec", notes:""},
+      {phase:"Accessory", name:"Hammer curl", alt1:"DB curl", alt2:"Cable curl", sets:"2–3", reps:"10–15", rest:"60–90 sec", notes:""},
+      {phase:"Accessory", name:"Cable extension", alt1:"DB extension", alt2:"Close-grip push-up", sets:"2–3", reps:"10–15", rest:"60–90 sec", notes:""},
+      {phase:"Cardio", name:"Incline walk", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"15–20 min", rest:"", notes:"Moderate/easy"},
+      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"2–3 min", rest:"", notes:""}
+    ]
+  },
+  {
+    focus: "Lower B — Posterior chain",
+    exercises: [
+      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace"},
+      {phase:"Strength", name:"RDL", alt1:"DB RDL", alt2:"Cable pull-through", sets:"3", reps:"6–10", rest:"2–3 min", notes:""},
+      {phase:"Strength", name:"Leg press", alt1:"Hack squat", alt2:"DB squat", sets:"3", reps:"8–12", rest:"2 min", notes:""},
+      {phase:"Strength", name:"Hip thrust", alt1:"Glute bridge", alt2:"Cable pull-through", sets:"3", reps:"8–12", rest:"2 min", notes:""},
+      {phase:"Accessory", name:"Leg curl", alt1:"Stability-ball curl", alt2:"Slider curl", sets:"3", reps:"10–15", rest:"60–90 sec", notes:""},
+      {phase:"Accessory", name:"Leg extension", alt1:"Split squat", alt2:"Step-up", sets:"2", reps:"12–15", rest:"60–90 sec", notes:""},
+      {phase:"Accessory", name:"Calf machine", alt1:"Leg-press calf raise", alt2:"DB calf raise", sets:"3", reps:"12–15", rest:"60–90 sec", notes:""},
+      {phase:"Core", name:"Cable crunch", alt1:"Hanging knee raise", alt2:"Dead bug", sets:"3", reps:"Controlled sets", rest:"60 sec", notes:""},
+      {phase:"Cardio", name:"Incline walk", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy"},
+      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"2–3 min", rest:"", notes:""}
+    ]
+  },
+  {
+    focus: "Full body — Circuit",
+    exercises: [
+      {phase:"Warm-up", name:"Treadmill / bike / cross-trainer", alt1:"", alt2:"", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace"},
+      {phase:"Circuit A", name:"Chest press", alt1:"DB press", alt2:"Push-ups", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"3 rounds"},
+      {phase:"Circuit A", name:"Cable row", alt1:"DB row", alt2:"Machine row", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"3 rounds"},
+      {phase:"Circuit A", name:"Leg press", alt1:"Goblet squat", alt2:"Split squat", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"3 rounds"},
+      {phase:"Circuit B", name:"Lat pulldown", alt1:"Assisted pull-up", alt2:"Cable pulldown", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"3 rounds"},
+      {phase:"Circuit B", name:"DB RDL", alt1:"RDL", alt2:"Cable pull-through", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"3 rounds"},
+      {phase:"Circuit B", name:"DB lateral raise", alt1:"Cable lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"3 rounds"},
+      {phase:"Circuit C", name:"Hammer curl", alt1:"DB curl", alt2:"Cable curl", sets:"2–3", reps:"10–15", rest:"60–90 sec after round", notes:"2–3 rounds"},
+      {phase:"Circuit C", name:"Cable pressdown", alt1:"DB extension", alt2:"Close-grip push-up", sets:"2–3", reps:"10–15", rest:"60–90 sec after round", notes:"2–3 rounds"},
+      {phase:"Circuit C", name:"Plank", alt1:"Dead bug", alt2:"Cable crunch", sets:"2–3", reps:"Controlled sets", rest:"60–90 sec after round", notes:"2–3 rounds"},
+      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"20–30 min", rest:"", notes:"Moderate"},
+      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"3–5 min", rest:"", notes:""}
+    ]
+  }
+];
+/* =================== DO NOT EDIT BELOW THIS LINE ==================== */
+
+const STORAGE_KEY = "gymx_state_v1";
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return { dayIndex: 0, completed: {} };
+}
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+let state = loadState();
+if(!state.completed) state.completed = {};
+if(state.dayIndex >= DAYS.length) state.dayIndex = 0;
+
+function currentCompletedSet(){
+  const key = String(state.dayIndex);
+  if(!state.completed[key]) state.completed[key] = [];
+  return state.completed[key];
+}
+
+function render(){
+  const day = DAYS[state.dayIndex];
+  const doneList = currentCompletedSet();
+
+  document.getElementById('dayCount').textContent = `DAY ${state.dayIndex+1}/${DAYS.length}`;
+  document.getElementById('dayFocus').textContent = day.focus;
+
+  const total = day.exercises.length;
+  const doneCount = doneList.length;
+  document.getElementById('progressLabel').textContent = `${doneCount} of ${total} done`;
+
+  const ticks = document.getElementById('ticks');
+  ticks.innerHTML = "";
+  day.exercises.forEach((ex, i) => {
+    const t = document.createElement('div');
+    t.className = 'tick' + (doneList.includes(i) ? ' done' : '');
+    ticks.appendChild(t);
+  });
+
+  const main = document.getElementById('main');
+  main.innerHTML = "";
+  let lastPhase = null;
+  day.exercises.forEach((ex, i) => {
+    if(ex.phase !== lastPhase){
+      const h = document.createElement('div');
+      h.className = 'phase-header';
+      h.textContent = ex.phase;
+      main.appendChild(h);
+      lastPhase = ex.phase;
+    }
+    const isDone = doneList.includes(i);
+    const card = document.createElement('div');
+    card.className = 'card' + (isDone ? ' done' : '');
+
+    const metaParts = [];
+    if(ex.sets) metaParts.push(`${ex.sets} sets`);
+    if(ex.reps) metaParts.push(ex.reps);
+    if(ex.rest) metaParts.push(`rest ${ex.rest}`);
+
+    const hasAlts = ex.alt1 || ex.alt2;
+
+    card.innerHTML = `
+      <div class="checkbox">${isDone ? '&#10003;' : ''}</div>
+      <div class="card-body">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-meta">${metaParts.join(' · ')}</div>
+        ${ex.notes ? `<div class="ex-notes">${ex.notes}</div>` : ''}
+        ${hasAlts ? `<div class="alt-toggle" data-idx="${i}">alternatives</div>
+        <div class="alt-box" id="alt-${i}">
+          ${ex.alt1 ? `<div><b>Alt 1</b> — ${ex.alt1}</div>` : ''}
+          ${ex.alt2 ? `<div><b>Alt 2</b> — ${ex.alt2}</div>` : ''}
+        </div>` : ''}
+      </div>
+    `;
+    card.addEventListener('click', (e) => {
+      if(e.target.closest('.alt-toggle')) return;
+      toggleExercise(i);
+    });
+    main.appendChild(card);
+  });
+
+  main.querySelectorAll('.alt-toggle').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const box = document.getElementById('alt-' + btn.dataset.idx);
+      box.classList.toggle('open');
+    });
+  });
+
+  const finishBtn = document.getElementById('finishBtn');
+  const forceLink = document.getElementById('forceLink');
+  const allDone = doneCount === total;
+  finishBtn.disabled = !allDone;
+  finishBtn.textContent = allDone
+    ? `Finish day → Day ${(state.dayIndex+1) % DAYS.length + 1}`
+    : `${total - doneCount} exercise${total-doneCount===1?'':'s'} left`;
+  forceLink.style.display = allDone ? 'none' : 'block';
+
+  renderDayJump();
+}
+
+function toggleExercise(i){
+  const list = currentCompletedSet();
+  const pos = list.indexOf(i);
+  if(pos === -1) list.push(i); else list.splice(pos,1);
+  saveState();
+  render();
+}
+
+function advanceDay(){
+  state.dayIndex = (state.dayIndex + 1) % DAYS.length;
+  saveState();
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+document.getElementById('finishBtn').addEventListener('click', () => {
+  if(currentCompletedSet().length === DAYS[state.dayIndex].exercises.length) advanceDay();
+});
+document.getElementById('forceLink').addEventListener('click', () => advanceDay());
+
+// Menu sheet
+const overlay = document.getElementById('overlay');
+const sheet = document.getElementById('sheet');
+function openSheet(){ overlay.classList.add('open'); sheet.classList.add('open'); }
+function closeSheet(){ overlay.classList.remove('open'); sheet.classList.remove('open'); }
+document.getElementById('menuBtn').addEventListener('click', openSheet);
+overlay.addEventListener('click', closeSheet);
+
+function renderDayJump(){
+  const wrap = document.getElementById('dayJump');
+  wrap.innerHTML = "";
+  DAYS.forEach((d, i) => {
+    const b = document.createElement('button');
+    b.textContent = `Day ${i+1}`;
+    if(i === state.dayIndex) b.classList.add('active');
+    b.addEventListener('click', () => {
+      state.dayIndex = i;
+      saveState();
+      render();
+      closeSheet();
+      window.scrollTo({top:0});
+    });
+    wrap.appendChild(b);
+  });
+}
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if(confirm('Reset all progress and go back to Day 1?')){
+    state = { dayIndex: 0, completed: {} };
+    saveState();
+    render();
+    closeSheet();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
