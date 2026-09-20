@@ -12,19 +12,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#14161A;
-    --surface:#1C1F24;
-    --surface-2:#20242A;
-    --border:#2B2F36;
-    --text:#F0EFEA;
-    --text-muted:#8D9199;
-    --text-faint:#5C6067;
-    --accent:#C1440E;
-    --accent-soft:rgba(193,68,14,0.14);
-    --accent-strong:#E0561A;
-    --done:#7FA65C;
-    --done-soft:rgba(127,166,92,0.14);
-    --radius:10px;
+    --bg:#FFFFFF;
+    --bg-soft:#F4F6F7;
+    --surface:#FFFFFF;
+    --border:#E2E6E9;
+    --border-strong:#D2D8DC;
+    --text:#12161A;
+    --text-muted:#616B74;
+    --text-faint:#9AA4AB;
+    --accent:#0E6E76;
+    --accent-strong:#0A555C;
+    --accent-soft:#E4F1F1;
+    --radius:12px;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
@@ -37,121 +36,125 @@
     padding-bottom:env(safe-area-inset-bottom);
     overscroll-behavior-y:none;
   }
-  .display{font-family:'Oswald',sans-serif; font-weight:600;}
+  .display{font-family:'Oswald',sans-serif; font-weight:700;}
 
   header{
     position:sticky; top:0; z-index:10;
-    background:linear-gradient(to bottom, var(--bg) 85%, transparent);
-    padding:calc(env(safe-area-inset-top) + 18px) 20px 14px;
+    background:var(--bg);
+    border-bottom:1px solid var(--border);
+    padding:calc(env(safe-area-inset-top) + 18px) 20px 16px;
   }
   .topbar{display:flex; justify-content:space-between; align-items:flex-start;}
-  .brand{font-size:12px; letter-spacing:2.5px; color:var(--text-faint); font-weight:600;}
+  .brand{font-size:12px; letter-spacing:2.5px; color:var(--text-faint); font-weight:700;}
   .menu-btn{
     width:34px; height:34px; border-radius:50%;
-    background:var(--surface); border:1px solid var(--border);
+    background:var(--bg-soft); border:1px solid var(--border);
     color:var(--text-muted); font-size:18px; line-height:1;
     display:flex; align-items:center; justify-content:center;
   }
-  .day-count{font-size:44px; margin:8px 0 2px; line-height:1;}
-  .day-focus{font-size:16px; color:var(--text-muted); font-weight:500; margin-bottom:14px;}
+  .day-count{font-size:46px; margin:8px 0 2px; line-height:1; color:var(--text);}
+  .day-focus{font-size:16px; color:var(--accent-strong); font-weight:600; margin-bottom:14px;}
 
   .ticks{display:flex; gap:5px; margin-bottom:2px;}
-  .tick{flex:1; height:4px; border-radius:2px; background:var(--border);}
-  .tick.done{background:var(--done);}
-  .tick.current{background:var(--accent-strong);}
-  .progress-label{font-size:12px; color:var(--text-faint); margin-top:8px;}
+  .tick{flex:1; height:5px; border-radius:3px; background:var(--border-strong);}
+  .tick.done{background:var(--accent);}
+  .progress-label{font-size:12.5px; color:var(--text-muted); margin-top:8px; font-weight:500;}
 
-  main{padding:6px 20px 140px;}
+  main{padding:6px 20px 150px;}
   .phase-header{
-    font-size:12.5px; color:var(--text-faint); font-weight:600;
-    margin:22px 0 8px; padding-left:2px;
+    font-size:13px; color:var(--text);
+    font-weight:700;
+    margin:24px 0 9px; padding-left:2px;
   }
-  .phase-header:first-child{margin-top:6px;}
+  .phase-header:first-child{margin-top:8px;}
 
   .card{
     background:var(--surface);
-    border:1px solid var(--border);
+    border:1.5px solid var(--border);
     border-radius:var(--radius);
-    padding:13px 14px;
-    margin-bottom:8px;
+    padding:14px 15px;
+    margin-bottom:9px;
     display:flex; align-items:flex-start; gap:12px;
     transition:background .15s ease, border-color .15s ease;
   }
-  .card.done{background:var(--done-soft); border-color:rgba(127,166,92,0.35);}
+  .card.done{background:var(--accent-soft); border-color:var(--accent);}
   .checkbox{
-    width:22px; height:22px; border-radius:50%;
-    border:2px solid var(--text-faint);
+    width:23px; height:23px; border-radius:50%;
+    border:2px solid var(--border-strong);
     flex-shrink:0; margin-top:2px;
     display:flex; align-items:center; justify-content:center;
     font-size:13px; color:transparent;
+    background:var(--bg);
   }
-  .card.done .checkbox{background:var(--done); border-color:var(--done); color:#0D1210;}
+  .card.done .checkbox{background:var(--accent); border-color:var(--accent); color:#fff;}
   .card-body{flex:1; min-width:0;}
-  .ex-name{font-size:15.5px; font-weight:600; margin-bottom:3px;}
+  .ex-name{font-size:15.5px; font-weight:700; margin-bottom:3px; color:var(--text);}
   .card.done .ex-name{color:var(--text-muted); text-decoration:line-through; text-decoration-color:var(--text-faint);}
-  .ex-meta{font-size:13px; color:var(--text-muted);}
-  .ex-notes{font-size:12.5px; color:var(--accent-strong); margin-top:4px;}
+  .ex-meta{font-size:13px; color:var(--text-muted); font-weight:500;}
+  .ex-notes{font-size:12.5px; color:var(--accent-strong); margin-top:5px; font-weight:600;}
   .alt-toggle{
-    font-size:12px; color:var(--text-faint); margin-top:7px;
-    display:inline-block; border-bottom:1px dotted var(--text-faint);
+    font-size:12.5px; color:var(--accent-strong); margin-top:8px;
+    display:inline-block; font-weight:600; border-bottom:1.5px solid var(--accent-soft);
   }
   .alt-box{
-    margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);
+    margin-top:9px; padding-top:9px; border-top:1px dashed var(--border-strong);
     font-size:12.5px; color:var(--text-muted); display:none;
   }
   .alt-box.open{display:block;}
-  .alt-box div{margin-bottom:3px;}
+  .alt-box div{margin-bottom:4px;}
   .alt-box b{color:var(--text);}
+  .alt-box .rule{color:var(--accent-strong); font-style:normal;}
 
   footer{
     position:fixed; bottom:0; left:0; right:0;
     padding:14px 20px calc(env(safe-area-inset-bottom) + 14px);
-    background:linear-gradient(to top, var(--bg) 70%, transparent);
+    background:linear-gradient(to top, var(--bg) 75%, transparent);
   }
   .finish-btn{
     width:100%; padding:16px; border:none; border-radius:var(--radius);
     font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; letter-spacing:0.5px;
     background:var(--accent); color:#fff;
   }
-  .finish-btn:disabled{background:var(--surface-2); color:var(--text-faint);}
+  .finish-btn:disabled{background:var(--bg-soft); color:var(--text-faint); border:1.5px solid var(--border);}
   .force-link{
     display:block; text-align:center; margin-top:9px;
     font-size:12.5px; color:var(--text-faint); text-decoration:underline;
   }
 
   .sheet-overlay{
-    position:fixed; inset:0; background:rgba(0,0,0,0.55);
+    position:fixed; inset:0; background:rgba(10,14,17,0.45);
     display:none; z-index:20;
   }
   .sheet-overlay.open{display:block;}
   .sheet{
     position:fixed; left:0; right:0; bottom:0; z-index:21;
-    background:var(--surface); border-radius:16px 16px 0 0;
+    background:var(--bg); border-radius:18px 18px 0 0;
     padding:22px 20px calc(env(safe-area-inset-bottom) + 22px);
     transform:translateY(100%); transition:transform .25s ease;
     max-height:80vh; overflow-y:auto;
+    border-top:1px solid var(--border);
   }
   .sheet.open{transform:translateY(0);}
-  .sheet h3{margin:0 0 14px; font-size:18px;}
+  .sheet h3{margin:0 0 14px; font-size:18px; font-weight:700;}
   .sheet-row{
     display:flex; justify-content:space-between; align-items:center;
     padding:13px 0; border-bottom:1px solid var(--border);
   }
   .sheet-row:last-child{border-bottom:none;}
   .sheet-btn{
-    background:var(--surface-2); border:1px solid var(--border); color:var(--text);
-    padding:8px 14px; border-radius:8px; font-size:13px; font-weight:500;
+    background:var(--bg-soft); border:1.5px solid var(--border-strong); color:var(--text);
+    padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600;
   }
   .day-jump{display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;}
   .day-jump button{
-    padding:8px 13px; border-radius:8px; border:1px solid var(--border);
-    background:var(--surface-2); color:var(--text-muted); font-size:13px;
+    padding:8px 13px; border-radius:8px; border:1.5px solid var(--border-strong);
+    background:var(--bg-soft); color:var(--text-muted); font-size:13px; font-weight:600;
   }
-  .day-jump button.active{background:var(--accent-soft); border-color:var(--accent); color:var(--accent-strong);}
-  .rules-list{font-size:13px; color:var(--text-muted); line-height:1.5;}
+  .day-jump button.active{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .rules-list{font-size:13px; color:var(--text-muted); line-height:1.55;}
   .rules-list div{margin-bottom:9px;}
-  .rules-list b{color:var(--text); font-weight:600;}
-  .danger{color:#D96B4A;}
+  .rules-list b{color:var(--text); font-weight:700;}
+  .danger{color:#B3392B; border-color:#EBC9C3; background:#FBEEEC;}
 </style>
 </head>
 <body>
@@ -162,9 +165,9 @@
     <button class="menu-btn" id="menuBtn">&#8942;</button>
   </div>
   <div class="day-count display" id="dayCount">DAY 1/5</div>
-  <div class="day-focus" id="dayFocus">Upper A — Strength</div>
+  <div class="day-focus" id="dayFocus">Upper A</div>
   <div class="ticks" id="ticks"></div>
-  <div class="progress-label" id="progressLabel">0 of 10 done</div>
+  <div class="progress-label" id="progressLabel">0 of 9 done</div>
 </header>
 
 <main id="main"></main>
@@ -189,13 +192,12 @@
 
   <h3 style="margin-top:24px;">Crowded gym rules</h3>
   <div class="rules-list">
-    <div><b>2+ people waiting</b> — switch to Alternative 1 immediately.</div>
-    <div><b>Alt 1 occupied</b> — use Alternative 2.</div>
-    <div><b>Primary lift</b> — only worth waiting for if you're progressing that exact movement.</div>
-    <div><b>Accessories</b> — never queue, just switch.</div>
-    <div><b>Equipment clusters</b> — stay in one area, batch compatible movements.</div>
-    <div><b>Effort</b> — most working sets, leave 1–3 reps in reserve.</div>
-    <div><b>Knee / shoulder</b> — controlled, pain-free range always wins over load.</div>
+    <div><b>2+ people waiting</b> — switch to Option 1 immediately.</div>
+    <div><b>Option 1 occupied</b> — use Option 2.</div>
+    <div><b>High priority lifts</b> — only worth waiting for if you're progressing that exact movement.</div>
+    <div><b>Low priority / accessories</b> — never queue, just switch.</div>
+    <div><b>Pain rule</b> — pain beats the hierarchy. Stop or reduce a painful variation and use a pain-free option.</div>
+    <div><b>Progression</b> — progress whichever variation you actually performed, not just the primary lift.</div>
   </div>
 </div>
 
@@ -205,95 +207,98 @@
    ---------------------------------------------------------------------
    This is the only section you (or Claude, next time) should touch to
    change the plan. Each day is one object in DAYS[]. Each exercise is:
-   { phase, name, alt1, alt2, sets, reps, rest, notes }
-   alt1 / alt2 / rest / notes can be left as "" if not needed.
-   The app just loops through DAYS in order, 1 -> 2 -> 3 -> 4 -> 5 -> 1...
-   advancing only when a day is finished — it has no idea what the real
-   weekday is, so skipped days (rest days) don't break the sequence.
+   { phase, name, alt1, alt2, sets, reps, rest, notes, rule }
+   alt1 / alt2 / rest / notes / rule can be left as "" if not needed.
+   "rule" is the specific crowded-gym substitution instruction for that
+   exact exercise. The app just loops through DAYS in order, 1 -> 2 ->
+   3 -> 4 -> 5 -> 1..., advancing only when a day is finished — it has
+   no idea what the real weekday is, so skipped/rest days don't break
+   the sequence.
 ===================================================================== */
 const DAYS = [
   {
-    focus: "Upper A — Strength",
+    focus: "Upper A",
     exercises: [
-      {phase:"Warm-up", name:"Treadmill / bike / cross-trainer", alt1:"", alt2:"", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace"},
-      {phase:"Strength", name:"Bench press", alt1:"Chest press machine", alt2:"DB press", sets:"3", reps:"6–8", rest:"2–3 min", notes:"If 2+ waiting, switch"},
-      {phase:"Strength", name:"Chest-supported row", alt1:"Seated cable row", alt2:"1-arm DB row", sets:"3", reps:"6–8", rest:"2–3 min", notes:""},
-      {phase:"Strength", name:"Incline DB press", alt1:"Incline machine press", alt2:"Push-ups", sets:"3", reps:"8–10", rest:"2 min", notes:""},
-      {phase:"Strength", name:"Lat pulldown", alt1:"Assisted pull-up", alt2:"Cable pulldown", sets:"3", reps:"8–10", rest:"2 min", notes:""},
-      {phase:"Accessory", name:"Cable lateral raise", alt1:"DB lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"12–15", rest:"60–90 sec", notes:""},
-      {phase:"Accessory", name:"DB curl", alt1:"Cable curl", alt2:"Hammer curl", sets:"2", reps:"10–12", rest:"60–90 sec", notes:""},
-      {phase:"Accessory", name:"Cable pressdown", alt1:"DB overhead extension", alt2:"Close-grip push-up", sets:"2", reps:"10–12", rest:"60–90 sec", notes:""},
-      {phase:"Cardio", name:"Incline walk", alt1:"Cross-trainer", alt2:"Bike", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy"},
-      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"2–3 min", rest:"", notes:""}
+      {phase:"Warm-up", name:"Treadmill / bike / cross-trainer", alt1:"", alt2:"", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace", rule:"Use any available cardio station"},
+      {phase:"Upper A", name:"Incline DB press", alt1:"Incline machine press", alt2:"Incline Smith press", sets:"3", reps:"8–10", rest:"2 min", notes:"", rule:"Use Option 1 immediately if bench/DB setup is occupied"},
+      {phase:"Upper A", name:"Chest press", alt1:"Flat DB press", alt2:"Bench press", sets:"2", reps:"8–10", rest:"2 min", notes:"", rule:"Do not queue for machine"},
+      {phase:"Upper A", name:"Lat pulldown", alt1:"Neutral-grip pulldown", alt2:"Assisted pull-up", sets:"3", reps:"8–12", rest:"2 min", notes:"", rule:"Switch if pulldown station has 2+ people waiting"},
+      {phase:"Upper A", name:"Chest-supported row", alt1:"Seated cable row", alt2:"1-arm DB row", sets:"3", reps:"6–10", rest:"2 min", notes:"", rule:"Use any free row option"},
+      {phase:"Upper A", name:"DB lateral raise", alt1:"Cable lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"12–20", rest:"60–90 sec", notes:"", rule:"Never queue for lateral raises"},
+      {phase:"Upper A", name:"Overhead cable extension", alt1:"DB overhead extension", alt2:"EZ-bar overhead extension", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"Mild shoulder pain: use pain-free version", rule:"If cable occupied, use DB option"},
+      {phase:"Upper A", name:"DB curl", alt1:"Cable curl", alt2:"EZ-bar curl", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Use whichever is free"},
+      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy", rule:"Use any available cardio station"}
     ]
   },
   {
-    focus: "Lower A — Quad emphasis",
+    focus: "Lower A",
     exercises: [
-      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace"},
-      {phase:"Strength", name:"Leg press", alt1:"Hack squat", alt2:"Goblet squat", sets:"3", reps:"6–10", rest:"2–3 min", notes:"Use pain-free range"},
-      {phase:"Strength", name:"Bulgarian split squat", alt1:"Reverse lunge", alt2:"DB split squat", sets:"3", reps:"8–10/leg", rest:"2 min", notes:"Do not force painful knee range"},
-      {phase:"Strength", name:"Leg extension", alt1:"Goblet squat", alt2:"Step-up", sets:"3", reps:"10–15", rest:"90 sec", notes:""},
-      {phase:"Strength", name:"Romanian deadlift", alt1:"DB RDL", alt2:"Cable pull-through", sets:"3", reps:"8–10", rest:"2 min", notes:""},
-      {phase:"Accessory", name:"Leg curl", alt1:"Stability-ball curl", alt2:"Slider curl", sets:"2–3", reps:"10–15", rest:"60–90 sec", notes:""},
-      {phase:"Accessory", name:"Calf machine", alt1:"Leg-press calf raise", alt2:"DB calf raise", sets:"3", reps:"10–15", rest:"60–90 sec", notes:""},
-      {phase:"Core", name:"Cable crunch", alt1:"Dead bug", alt2:"Plank", sets:"2–3", reps:"Controlled sets", rest:"60 sec", notes:""},
-      {phase:"Cardio", name:"Incline walk", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy"},
-      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"2–3 min", rest:"", notes:""}
+      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace", rule:"Use any available station"},
+      {phase:"Lower A", name:"Leg press", alt1:"Hack squat", alt2:"Goblet squat", sets:"3", reps:"6–10", rest:"2–3 min", notes:"Pain-free knee depth", rule:"Switch immediately if queue"},
+      {phase:"Lower A", name:"Bulgarian split squat", alt1:"Reverse lunge", alt2:"DB split squat", sets:"2", reps:"8–10/leg", rest:"2 min", notes:"Control knee alignment", rule:"No equipment queue"},
+      {phase:"Lower A", name:"Leg extension", alt1:"Step-up", alt2:"Spanish squat", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"Pain-free range", rule:"Do not queue"},
+      {phase:"Lower A", name:"RDL", alt1:"DB RDL", alt2:"Cable pull-through", sets:"3", reps:"6–10", rest:"2–3 min", notes:"Neutral spine", rule:"Use DB RDL if rack unavailable"},
+      {phase:"Lower A", name:"Leg curl", alt1:"Seated/lying curl variation", alt2:"Slider curl", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Skip queue and use slider/curl alternative"},
+      {phase:"Lower A", name:"Adductor machine", alt1:"Wide-stance leg press", alt2:"Controlled split squat", sets:"2", reps:"12–20", rest:"60–90 sec", notes:"Optional accessory", rule:"Never wait; skip to alternative"},
+      {phase:"Lower A", name:"Calf raise", alt1:"Leg-press calf raise", alt2:"DB calf raise", sets:"3", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Use any available calf option"},
+      {phase:"Lower A", name:"Cable crunch", alt1:"Reverse crunch", alt2:"Dead bug", sets:"2", reps:"10–15", rest:"60 sec", notes:"", rule:"If cable occupied, use bodyweight option"},
+      {phase:"Lower A", name:"Pallof press", alt1:"Side plank", alt2:"Cable woodchop", sets:"2", reps:"10–15/side", rest:"60 sec", notes:"", rule:"Use side plank if cable occupied"},
+      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy", rule:"Use any available station"}
     ]
   },
   {
-    focus: "Upper B — Hypertrophy",
+    focus: "Upper B",
     exercises: [
-      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace"},
-      {phase:"Hypertrophy", name:"Lat pulldown", alt1:"Assisted pull-up", alt2:"Cable pulldown", sets:"3", reps:"8–12", rest:"2 min", notes:""},
-      {phase:"Hypertrophy", name:"Machine chest press", alt1:"DB press", alt2:"Push-ups", sets:"3", reps:"8–12", rest:"2 min", notes:""},
-      {phase:"Hypertrophy", name:"Seated cable row", alt1:"Chest-supported row", alt2:"DB row", sets:"3", reps:"10–12", rest:"90–120 sec", notes:""},
-      {phase:"Hypertrophy", name:"Incline DB press", alt1:"Incline machine", alt2:"Push-ups", sets:"2–3", reps:"10–12", rest:"90–120 sec", notes:""},
-      {phase:"Accessory", name:"Cable lateral raise", alt1:"DB lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"12–20", rest:"60–90 sec", notes:""},
-      {phase:"Accessory", name:"Reverse pec deck", alt1:"Cable rear-delt fly", alt2:"DB rear-delt fly", sets:"3", reps:"12–20", rest:"60–90 sec", notes:""},
-      {phase:"Accessory", name:"Hammer curl", alt1:"DB curl", alt2:"Cable curl", sets:"2–3", reps:"10–15", rest:"60–90 sec", notes:""},
-      {phase:"Accessory", name:"Cable extension", alt1:"DB extension", alt2:"Close-grip push-up", sets:"2–3", reps:"10–15", rest:"60–90 sec", notes:""},
-      {phase:"Cardio", name:"Incline walk", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"15–20 min", rest:"", notes:"Moderate/easy"},
-      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"2–3 min", rest:"", notes:""}
+      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace", rule:"Use any available station"},
+      {phase:"Upper B", name:"Neutral-grip pulldown", alt1:"Lat pulldown", alt2:"Assisted pull-up", sets:"3", reps:"8–12", rest:"2 min", notes:"", rule:"Switch immediately if queue"},
+      {phase:"Upper B", name:"Machine chest press", alt1:"Flat DB press", alt2:"Bench press", sets:"3", reps:"8–12", rest:"2 min", notes:"", rule:"Use DB press if machine occupied"},
+      {phase:"Upper B", name:"Seated cable row", alt1:"Chest-supported row", alt2:"1-arm DB row", sets:"3", reps:"10–12", rest:"90–120 sec", notes:"", rule:"Don't queue for cable"},
+      {phase:"Upper B", name:"Incline machine press", alt1:"Incline DB press", alt2:"Incline Smith press", sets:"2", reps:"10–12", rest:"90–120 sec", notes:"", rule:"Use whichever incline station is free"},
+      {phase:"Upper B", name:"Reverse pec deck", alt1:"Cable rear-delt fly", alt2:"DB rear-delt fly", sets:"3", reps:"12–20", rest:"60–90 sec", notes:"", rule:"Never wait for rear-delt machine"},
+      {phase:"Upper B", name:"Cable lateral raise", alt1:"DB lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"12–20", rest:"60–90 sec", notes:"", rule:"Use DB if cable occupied"},
+      {phase:"Upper B", name:"DB shrug", alt1:"Machine shrug", alt2:"Cable shrug", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Never queue"},
+      {phase:"Upper B", name:"Hammer curl", alt1:"Rope hammer curl", alt2:"Cross-body hammer curl", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Use any free option"},
+      {phase:"Upper B", name:"Overhead cable extension", alt1:"DB overhead extension", alt2:"EZ-bar overhead extension", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"Mild shoulder pain: use pain-free version", rule:"If cable occupied, use DB option"},
+      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"15–20 min", rest:"", notes:"Moderate/easy", rule:"Use any available station"}
     ]
   },
   {
-    focus: "Lower B — Posterior chain",
+    focus: "Lower B",
     exercises: [
-      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace"},
-      {phase:"Strength", name:"RDL", alt1:"DB RDL", alt2:"Cable pull-through", sets:"3", reps:"6–10", rest:"2–3 min", notes:""},
-      {phase:"Strength", name:"Leg press", alt1:"Hack squat", alt2:"DB squat", sets:"3", reps:"8–12", rest:"2 min", notes:""},
-      {phase:"Strength", name:"Hip thrust", alt1:"Glute bridge", alt2:"Cable pull-through", sets:"3", reps:"8–12", rest:"2 min", notes:""},
-      {phase:"Accessory", name:"Leg curl", alt1:"Stability-ball curl", alt2:"Slider curl", sets:"3", reps:"10–15", rest:"60–90 sec", notes:""},
-      {phase:"Accessory", name:"Leg extension", alt1:"Split squat", alt2:"Step-up", sets:"2", reps:"12–15", rest:"60–90 sec", notes:""},
-      {phase:"Accessory", name:"Calf machine", alt1:"Leg-press calf raise", alt2:"DB calf raise", sets:"3", reps:"12–15", rest:"60–90 sec", notes:""},
-      {phase:"Core", name:"Cable crunch", alt1:"Hanging knee raise", alt2:"Dead bug", sets:"3", reps:"Controlled sets", rest:"60 sec", notes:""},
-      {phase:"Cardio", name:"Incline walk", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy"},
-      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"2–3 min", rest:"", notes:""}
+      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace", rule:"Use any available station"},
+      {phase:"Lower B", name:"RDL", alt1:"DB RDL", alt2:"Cable pull-through", sets:"3", reps:"6–10", rest:"2–3 min", notes:"", rule:"Use DB RDL if rack unavailable"},
+      {phase:"Lower B", name:"Hip thrust", alt1:"Glute bridge", alt2:"Smith hip thrust", sets:"3", reps:"8–12", rest:"2 min", notes:"", rule:"Do not wait for bench; use glute bridge"},
+      {phase:"Lower B", name:"Leg press", alt1:"Hack squat", alt2:"DB squat", sets:"3", reps:"8–12", rest:"2 min", notes:"Pain-free knee depth", rule:"Switch immediately if queue"},
+      {phase:"Lower B", name:"Leg curl", alt1:"Seated/lying curl variation", alt2:"Slider curl", sets:"3", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Skip queue"},
+      {phase:"Lower B", name:"Abductor machine", alt1:"Cable abduction", alt2:"Side-lying abduction", sets:"2", reps:"12–20", rest:"60–90 sec", notes:"Optional accessory", rule:"Never wait; use alternative"},
+      {phase:"Lower B", name:"Leg extension", alt1:"Step-up", alt2:"Split squat", sets:"2", reps:"12–15", rest:"60–90 sec", notes:"", rule:"Skip queue"},
+      {phase:"Lower B", name:"Calf raise", alt1:"Leg-press calf raise", alt2:"DB calf raise", sets:"3", reps:"12–15", rest:"60–90 sec", notes:"", rule:"Use any available calf option"},
+      {phase:"Lower B", name:"Cable crunch", alt1:"Reverse crunch", alt2:"Dead bug", sets:"2", reps:"10–15", rest:"60 sec", notes:"", rule:"Use bodyweight if cable occupied"},
+      {phase:"Lower B", name:"Side plank", alt1:"Pallof press", alt2:"Cable woodchop", sets:"2", reps:"20–45 sec/side", rest:"60 sec", notes:"", rule:"No equipment required"},
+      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy", rule:"Use any available station"}
     ]
   },
   {
     focus: "Full body — Circuit",
     exercises: [
-      {phase:"Warm-up", name:"Treadmill / bike / cross-trainer", alt1:"", alt2:"", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace"},
-      {phase:"Circuit A", name:"Chest press", alt1:"DB press", alt2:"Push-ups", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"3 rounds"},
-      {phase:"Circuit A", name:"Cable row", alt1:"DB row", alt2:"Machine row", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"3 rounds"},
-      {phase:"Circuit A", name:"Leg press", alt1:"Goblet squat", alt2:"Split squat", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"3 rounds"},
-      {phase:"Circuit B", name:"Lat pulldown", alt1:"Assisted pull-up", alt2:"Cable pulldown", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"3 rounds"},
-      {phase:"Circuit B", name:"DB RDL", alt1:"RDL", alt2:"Cable pull-through", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"3 rounds"},
-      {phase:"Circuit B", name:"DB lateral raise", alt1:"Cable lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"3 rounds"},
-      {phase:"Circuit C", name:"Hammer curl", alt1:"DB curl", alt2:"Cable curl", sets:"2–3", reps:"10–15", rest:"60–90 sec after round", notes:"2–3 rounds"},
-      {phase:"Circuit C", name:"Cable pressdown", alt1:"DB extension", alt2:"Close-grip push-up", sets:"2–3", reps:"10–15", rest:"60–90 sec after round", notes:"2–3 rounds"},
-      {phase:"Circuit C", name:"Plank", alt1:"Dead bug", alt2:"Cable crunch", sets:"2–3", reps:"Controlled sets", rest:"60–90 sec after round", notes:"2–3 rounds"},
-      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"20–30 min", rest:"", notes:"Moderate"},
-      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"3–5 min", rest:"", notes:""}
+      {phase:"Warm-up", name:"Treadmill / bike / cross-trainer", alt1:"", alt2:"", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace", rule:"Use any available station"},
+      {phase:"Circuit A", name:"Chest press", alt1:"DB press", alt2:"Push-ups", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use any free chest option"},
+      {phase:"Circuit A", name:"Cable row", alt1:"DB row", alt2:"Machine row", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use any free row option"},
+      {phase:"Circuit A", name:"Leg press", alt1:"Goblet squat", alt2:"Split squat", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use any free option"},
+      {phase:"Circuit B", name:"Lat pulldown", alt1:"Assisted pull-up", alt2:"Neutral pulldown", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Switch immediately if station occupied"},
+      {phase:"Circuit B", name:"DB RDL", alt1:"RDL", alt2:"Cable pull-through", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use free option"},
+      {phase:"Circuit B", name:"DB lateral raise", alt1:"Cable lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Never queue"},
+      {phase:"Circuit C", name:"Hammer curl", alt1:"DB curl", alt2:"Cable curl", sets:"2", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 2 rounds", rule:"Use any free option"},
+      {phase:"Circuit C", name:"Cable pressdown", alt1:"DB extension", alt2:"Overhead cable extension", sets:"2", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 2 rounds", rule:"Use DB if cable occupied"},
+      {phase:"Circuit C", name:"Plank", alt1:"Dead bug", alt2:"Side plank", sets:"2", reps:"30–60 sec", rest:"60–90 sec after round", notes:"Complete 2 rounds", rule:"No equipment required"},
+      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"20–30 min", rest:"", notes:"Moderate", rule:"Use any available station"},
+      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"3–5 min", rest:"", notes:"", rule:""}
     ]
   }
 ];
 /* =================== DO NOT EDIT BELOW THIS LINE ==================== */
 
-const STORAGE_KEY = "gymx_state_v1";
+const STORAGE_KEY = "gymx_state_v2";
 
 function loadState(){
   try{
@@ -363,8 +368,9 @@ function render(){
         ${ex.notes ? `<div class="ex-notes">${ex.notes}</div>` : ''}
         ${hasAlts ? `<div class="alt-toggle" data-idx="${i}">alternatives</div>
         <div class="alt-box" id="alt-${i}">
-          ${ex.alt1 ? `<div><b>Alt 1</b> — ${ex.alt1}</div>` : ''}
-          ${ex.alt2 ? `<div><b>Alt 2</b> — ${ex.alt2}</div>` : ''}
+          ${ex.alt1 ? `<div><b>Option 1</b> — ${ex.alt1}</div>` : ''}
+          ${ex.alt2 ? `<div><b>Option 2</b> — ${ex.alt2}</div>` : ''}
+          ${ex.rule ? `<div class="rule">${ex.rule}</div>` : ''}
         </div>` : ''}
       </div>
     `;
