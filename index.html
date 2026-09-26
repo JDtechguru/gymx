@@ -4,459 +4,814 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="GymX">
+<meta name="theme-color" content="#0A0A0D">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FF2E63'/%3E%3Cstop offset='1' stop-color='%23FF8A3D'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='22' fill='%230A0A0D'/%3E%3Cpath d='M70 28L30 72' stroke='%23fff' stroke-width='15' stroke-linecap='round'/%3E%3Cpath d='M30 28L70 72' stroke='%230A0A0D' stroke-width='24' stroke-linecap='round'/%3E%3Cpath d='M30 28L70 72' stroke='url(%23g)' stroke-width='15' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>GymX</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#FFFFFF;
-    --bg-soft:#F4F6F7;
-    --surface:#FFFFFF;
-    --border:#E2E6E9;
-    --border-strong:#D2D8DC;
-    --text:#12161A;
-    --text-muted:#616B74;
-    --text-faint:#9AA4AB;
-    --accent:#0E6E76;
-    --accent-strong:#0A555C;
-    --accent-soft:#E4F1F1;
-    --radius:12px;
+    --bg:#0A0A0D;
+    --surface:#15151B;
+    --surface-2:#1C1C24;
+    --border:#25252E;
+    --text:#FFFFFF;
+    --muted:#A3A3B2;
+    --faint:#646472;
+    --accent:#FF2E63;
+    --accent-2:#FF8A3D;
+    --grad:linear-gradient(135deg,var(--accent),var(--accent-2));
+    --radius:16px;
+    --ease:cubic-bezier(.2,.8,.2,1);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
   body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Inter',-apple-system,sans-serif;
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Inter',-apple-system,'Helvetica Neue',sans-serif;
     -webkit-font-smoothing:antialiased;
-    padding-bottom:env(safe-area-inset-bottom);
     overscroll-behavior-y:none;
+    -webkit-user-select:none; user-select:none;
   }
-  .display{font-family:'Oswald',sans-serif; font-weight:700;}
+  button{font-family:inherit; cursor:pointer;}
+  .display{font-family:'Oswald','Arial Narrow',sans-serif; font-weight:700; letter-spacing:.3px;}
+  #app{transition:opacity .25s var(--ease), transform .25s var(--ease);}
+  #app.swap{opacity:0; transform:scale(.985);}
 
-  header{
-    position:sticky; top:0; z-index:10;
-    background:var(--bg);
-    border-bottom:1px solid var(--border);
-    padding:calc(env(safe-area-inset-top) + 18px) 20px 16px;
+  /* ---------- top bar ---------- */
+  .top{
+    position:sticky; top:0; z-index:15;
+    padding:calc(env(safe-area-inset-top) + 10px) 18px 10px;
+    background:rgba(10,10,13,.82);
+    -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+    display:flex; align-items:center; gap:10px;
   }
-  .topbar{display:flex; justify-content:space-between; align-items:flex-start;}
-  .brand{font-size:12px; letter-spacing:2.5px; color:var(--text-faint); font-weight:700;}
-  .menu-btn{
-    width:34px; height:34px; border-radius:50%;
-    background:var(--bg-soft); border:1px solid var(--border);
-    color:var(--text-muted); font-size:18px; line-height:1;
+  .logo{width:32px; height:32px; flex-shrink:0;}
+  .wordmark{font-size:20px; letter-spacing:1.5px;}
+  .wordmark span{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .spacer{flex:1;}
+  .ver-pill{
+    border:1px solid var(--border); background:var(--surface);
+    color:var(--muted); font-size:12px; font-weight:700;
+    padding:6px 11px; border-radius:20px; letter-spacing:.5px;
+  }
+  .icon-btn{
+    width:36px; height:36px; border-radius:50%;
+    border:1px solid var(--border); background:var(--surface);
+    color:var(--text); font-size:18px; line-height:1;
     display:flex; align-items:center; justify-content:center;
   }
-  .day-count{font-size:46px; margin:8px 0 2px; line-height:1; color:var(--text);}
-  .day-focus{font-size:16px; color:var(--accent-strong); font-weight:600; margin-bottom:14px;}
-
-  .ticks{display:flex; gap:5px; margin-bottom:2px;}
-  .tick{flex:1; height:5px; border-radius:3px; background:var(--border-strong);}
-  .tick.done{background:var(--accent);}
-  .progress-label{font-size:12.5px; color:var(--text-muted); margin-top:8px; font-weight:500;}
-
-  main{padding:6px 20px 150px;}
-  .phase-header{
-    font-size:13px; color:var(--text);
-    font-weight:700;
-    margin:24px 0 9px; padding-left:2px;
+  .top-bar-progress{
+    position:absolute; left:0; bottom:0; height:2px; width:100%;
+    background:transparent; overflow:hidden;
   }
-  .phase-header:first-child{margin-top:8px;}
+  .top-bar-progress i{display:block; height:100%; width:0; background:var(--grad); transition:width .5s var(--ease);}
 
+  /* ---------- hero ---------- */
+  .hero{
+    margin:6px 16px 0; border-radius:22px; position:relative; overflow:hidden;
+    padding:20px 18px 18px; min-height:168px;
+    background:linear-gradient(135deg,var(--h1),var(--h2));
+    display:flex; align-items:flex-end; gap:12px;
+    box-shadow:0 18px 40px -18px var(--h1);
+  }
+  .hero::before{
+    content:""; position:absolute; inset:0;
+    background:radial-gradient(120% 90% at 100% 0%, rgba(255,255,255,.22), transparent 55%),
+               radial-gradient(90% 80% at 0% 100%, rgba(0,0,0,.35), transparent 60%);
+    pointer-events:none;
+  }
+  .hero-wm{
+    position:absolute; right:-6px; top:-26px;
+    font-family:'Oswald',sans-serif; font-weight:700;
+    font-size:150px; line-height:1; color:rgba(255,255,255,.13);
+    pointer-events:none;
+  }
+  .hero-left{position:relative; flex:1; min-width:0;}
+  .hero-kicker{font-size:11.5px; font-weight:800; letter-spacing:2px; color:rgba(255,255,255,.85);}
+  .hero-title{font-size:32px; line-height:1.05; margin:6px 0 6px; text-transform:uppercase;}
+  .hero-sub{font-size:13px; color:rgba(255,255,255,.88); font-weight:500;}
+  .ring{position:relative; width:84px; height:84px; flex-shrink:0;}
+  .ring svg{width:84px; height:84px; transform:rotate(-90deg);}
+  .ring .track{stroke:rgba(0,0,0,.25);}
+  .ring .val{stroke:#fff; transition:stroke-dashoffset .7s var(--ease);}
+  .ring-pct{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+  }
+  .ring-pct b{font-family:'Oswald',sans-serif; font-size:22px; font-weight:700; line-height:1;}
+  .ring-pct small{font-size:9.5px; font-weight:700; letter-spacing:1px; opacity:.85; margin-top:2px;}
+  .ring.full{animation:ringPop .6s var(--ease);}
+  @keyframes ringPop{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+
+  /* ---------- cycle strip ---------- */
+  .cycle{display:flex; gap:8px; padding:14px 16px 4px;}
+  .cyc{
+    flex:1; border-radius:12px; background:var(--surface); border:1px solid var(--border);
+    padding:8px 4px 7px; text-align:center; position:relative; overflow:hidden;
+    transition:transform .2s var(--ease), border-color .2s;
+  }
+  .cyc:active{transform:scale(.95);}
+  .cyc b{display:block; font-family:'Oswald',sans-serif; font-size:15px; font-weight:600; color:var(--muted);}
+  .cyc small{display:block; font-size:9.5px; color:var(--faint); font-weight:700; letter-spacing:.4px; margin-top:1px;}
+  .cyc .fill{position:absolute; left:0; bottom:0; height:3px; background:var(--grad); transition:width .5s var(--ease);}
+  .cyc.past b{color:var(--text);}
+  .cyc.past small{color:var(--muted);}
+  .cyc.current{border-color:var(--accent); background:var(--surface-2);}
+  .cyc.current b{color:var(--text);}
+  .cyc.current small{color:var(--accent-2);}
+
+  /* ---------- stats ---------- */
+  .stats{display:flex; gap:8px; padding:8px 16px 2px; flex-wrap:wrap;}
+  .stat{
+    display:flex; align-items:center; gap:6px;
+    font-size:12px; color:var(--muted); font-weight:600;
+    background:var(--surface); border:1px solid var(--border);
+    padding:6px 10px; border-radius:20px;
+  }
+  .stat svg{width:14px; height:14px;}
+  .stat b{color:var(--text);}
+
+  /* ---------- list ---------- */
+  main{padding:8px 16px 150px;}
+  .tip{
+    margin:12px 0 4px; padding:11px 13px; border-radius:12px;
+    background:linear-gradient(135deg,rgba(255,46,99,.12),rgba(255,138,61,.08));
+    border:1px solid rgba(255,46,99,.25);
+    font-size:12.5px; color:#FFD9CC; line-height:1.45;
+  }
+  .tip b{color:#fff;}
+  .group{font-size:11.5px; font-weight:800; letter-spacing:1.8px; color:var(--faint); margin:22px 0 9px 2px; text-transform:uppercase;}
   .card{
-    background:var(--surface);
-    border:1.5px solid var(--border);
-    border-radius:var(--radius);
-    padding:14px 15px;
-    margin-bottom:9px;
-    display:flex; align-items:flex-start; gap:12px;
-    transition:background .15s ease, border-color .15s ease;
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:14px; margin-bottom:10px;
+    display:flex; gap:13px; align-items:flex-start;
+    transition:transform .18s var(--ease), opacity .3s var(--ease), background .3s, border-color .3s;
+    animation:fadeUp .42s var(--ease) both;
+    animation-delay:calc(var(--i) * 40ms);
   }
-  .card.done{background:var(--accent-soft); border-color:var(--accent);}
-  .checkbox{
-    width:23px; height:23px; border-radius:50%;
-    border:2px solid var(--border-strong);
-    flex-shrink:0; margin-top:2px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:13px; color:transparent;
-    background:var(--bg);
+  .card:active{transform:scale(.975);}
+  @keyframes fadeUp{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
+  .card.done{opacity:.5; background:#111116;}
+  .check{
+    width:34px; height:34px; border-radius:50%; flex-shrink:0;
+    border:2px solid var(--border); background:var(--surface-2);
+    display:flex; align-items:center; justify-content:center; position:relative;
+    font-family:'Oswald',sans-serif; font-size:14px; font-weight:600; color:var(--muted);
+    transition:background .25s, border-color .25s;
   }
-  .card.done .checkbox{background:var(--accent); border-color:var(--accent); color:#fff;}
-  .card-body{flex:1; min-width:0;}
-  .ex-name{font-size:15.5px; font-weight:700; margin-bottom:3px; color:var(--text);}
-  .card.done .ex-name{color:var(--text-muted); text-decoration:line-through; text-decoration-color:var(--text-faint);}
-  .ex-meta{font-size:13px; color:var(--text-muted); font-weight:500;}
-  .ex-notes{font-size:12.5px; color:var(--accent-strong); margin-top:5px; font-weight:600;}
-  .alt-toggle{
-    font-size:12.5px; color:var(--accent-strong); margin-top:8px;
-    display:inline-block; font-weight:600; border-bottom:1.5px solid var(--accent-soft);
+  .check svg{position:absolute; width:18px; height:18px; opacity:0;}
+  .check svg path{stroke-dasharray:24; stroke-dashoffset:24;}
+  .card.done .check{background:var(--grad); border-color:transparent; color:transparent;}
+  .card.done .check svg{opacity:1;}
+  .card.done .check svg path{animation:draw .35s .05s var(--ease) forwards;}
+  .card.pop .check{animation:pop .45s var(--ease);}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @keyframes pop{0%{transform:scale(1)}35%{transform:scale(1.28)}100%{transform:scale(1)}}
+  .body{flex:1; min-width:0;}
+  .chip{
+    display:inline-block; font-size:10px; font-weight:800; letter-spacing:1.2px;
+    padding:3px 8px; border-radius:6px; margin-bottom:6px; text-transform:uppercase;
+    color:var(--c); background:color-mix(in srgb, var(--c) 16%, transparent);
   }
-  .alt-box{
-    margin-top:9px; padding-top:9px; border-top:1px dashed var(--border-strong);
-    font-size:12.5px; color:var(--text-muted); display:none;
+  .name{font-size:16.5px; font-weight:700; line-height:1.25;}
+  .card.done .name{text-decoration:line-through; text-decoration-color:var(--faint);}
+  .meta{margin-top:5px; font-size:13px; color:var(--muted); font-weight:500;}
+  .meta b{color:var(--text); font-weight:700;}
+  .sub{margin-top:3px; font-size:12px; color:var(--faint);}
+  .note{margin-top:6px; font-size:12.5px; color:var(--accent-2); font-weight:600;}
+  .opt-btn{
+    margin-top:10px; background:none; border:1px solid var(--border);
+    color:var(--muted); font-size:12px; font-weight:700;
+    padding:6px 11px; border-radius:20px; display:inline-flex; align-items:center; gap:6px;
   }
-  .alt-box.open{display:block;}
-  .alt-box div{margin-bottom:4px;}
-  .alt-box b{color:var(--text);}
-  .alt-box .rule{color:var(--accent-strong); font-style:normal;}
+  .opt-btn .car{display:inline-block; transition:transform .25s var(--ease);}
+  .opt-btn.open .car{transform:rotate(180deg);}
+  .opts{max-height:0; overflow:hidden; transition:max-height .35s var(--ease);}
+  .opts-inner{padding-top:10px;}
+  .opt{
+    display:flex; gap:10px; align-items:center;
+    padding:8px 0; border-top:1px solid var(--border);
+    font-size:13.5px; color:var(--text);
+  }
+  .opt span{
+    font-family:'Oswald',sans-serif; font-size:11px; color:var(--accent-2);
+    border:1px solid rgba(255,138,61,.4); border-radius:6px; padding:1px 6px; flex-shrink:0;
+  }
+  .rule{font-size:12px; color:var(--muted); padding-top:8px; border-top:1px solid var(--border);}
 
+  /* ---------- footer ---------- */
   footer{
-    position:fixed; bottom:0; left:0; right:0;
-    padding:14px 20px calc(env(safe-area-inset-bottom) + 14px);
-    background:linear-gradient(to top, var(--bg) 75%, transparent);
+    position:fixed; left:0; right:0; bottom:0; z-index:12;
+    padding:14px 16px calc(env(safe-area-inset-bottom) + 12px);
+    background:linear-gradient(to top, var(--bg) 70%, rgba(10,10,13,0));
   }
-  .finish-btn{
-    width:100%; padding:16px; border:none; border-radius:var(--radius);
-    font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; letter-spacing:0.5px;
-    background:var(--accent); color:#fff;
+  .cta{
+    width:100%; padding:17px; border:none; border-radius:16px;
+    font-family:'Oswald',sans-serif; font-size:17px; font-weight:600; letter-spacing:1px;
+    background:var(--surface-2); color:var(--muted);
+    transition:transform .15s var(--ease), background .3s;
+    position:relative; overflow:hidden;
   }
-  .finish-btn:disabled{background:var(--bg-soft); color:var(--text-faint); border:1.5px solid var(--border);}
-  .force-link{
-    display:block; text-align:center; margin-top:9px;
-    font-size:12.5px; color:var(--text-faint); text-decoration:underline;
+  .cta:active{transform:scale(.97);}
+  .cta.ready{background:var(--grad); color:#fff; box-shadow:0 10px 30px -10px var(--accent); animation:glow 1.8s ease-in-out infinite;}
+  .cta.ready::after{
+    content:""; position:absolute; top:0; left:-60%; width:40%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);
+    transform:skewX(-20deg); animation:shine 2.4s ease-in-out infinite;
+  }
+  @keyframes glow{0%,100%{box-shadow:0 10px 30px -12px var(--accent)}50%{box-shadow:0 10px 36px -6px var(--accent)}}
+  @keyframes shine{0%{left:-60%}60%,100%{left:130%}}
+  .skip{display:block; text-align:center; margin-top:9px; font-size:12px; color:var(--faint); background:none; border:none; width:100%;}
+
+  /* ---------- sheet ---------- */
+  .overlay{position:fixed; inset:0; background:rgba(0,0,0,.6); opacity:0; pointer-events:none; transition:opacity .25s; z-index:30;}
+  .overlay.open{opacity:1; pointer-events:auto;}
+  .sheet{
+    position:fixed; left:0; right:0; bottom:0; z-index:31;
+    background:#121217; border-top:1px solid var(--border); border-radius:24px 24px 0 0;
+    padding:10px 18px calc(env(safe-area-inset-bottom) + 22px);
+    transform:translateY(105%); transition:transform .35s var(--ease);
+    max-height:86vh; overflow-y:auto;
+  }
+  .sheet.open{transform:none;}
+  .grab{width:40px; height:5px; border-radius:3px; background:var(--border); margin:0 auto 16px;}
+  .sheet h3{margin:18px 0 10px; font-size:12px; font-weight:800; letter-spacing:1.8px; color:var(--faint);}
+  .sheet h3:first-of-type{margin-top:4px;}
+  .ver{
+    width:100%; text-align:left; border:1.5px solid var(--border); background:var(--surface);
+    color:var(--text); border-radius:16px; padding:14px; margin-bottom:9px;
+    display:flex; gap:12px; align-items:center; transition:border-color .2s, transform .15s;
+  }
+  .ver:active{transform:scale(.98);}
+  .ver.active{border-color:var(--accent); background:linear-gradient(135deg,rgba(255,46,99,.12),rgba(255,138,61,.05));}
+  .ver-badge{
+    width:44px; height:44px; border-radius:12px; flex-shrink:0;
+    background:var(--surface-2); display:flex; align-items:center; justify-content:center;
+    font-family:'Oswald',sans-serif; font-size:17px; font-weight:700; color:var(--muted);
+  }
+  .ver.active .ver-badge{background:var(--grad); color:#fff;}
+  .ver-txt b{display:block; font-size:15px;}
+  .ver-txt small{display:block; font-size:12px; color:var(--muted); margin-top:3px; line-height:1.35;}
+  .ver-txt em{display:block; font-style:normal; font-size:11px; color:var(--accent-2); margin-top:5px; font-weight:700;}
+  .rules div{font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:9px;}
+  .rules b{color:var(--text);}
+  .danger{
+    width:100%; margin-top:6px; padding:13px; border-radius:14px;
+    border:1px solid rgba(255,80,80,.35); background:rgba(255,80,80,.08);
+    color:#FF7B7B; font-size:14px; font-weight:700;
   }
 
-  .sheet-overlay{
-    position:fixed; inset:0; background:rgba(10,14,17,0.45);
-    display:none; z-index:20;
+  /* ---------- celebration ---------- */
+  .celebrate{
+    position:fixed; inset:0; z-index:40; display:flex; align-items:center; justify-content:center;
+    background:rgba(6,6,9,.9); -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+    opacity:0; pointer-events:none; transition:opacity .3s;
+    padding:24px;
   }
-  .sheet-overlay.open{display:block;}
-  .sheet{
-    position:fixed; left:0; right:0; bottom:0; z-index:21;
-    background:var(--bg); border-radius:18px 18px 0 0;
-    padding:22px 20px calc(env(safe-area-inset-bottom) + 22px);
-    transform:translateY(100%); transition:transform .25s ease;
-    max-height:80vh; overflow-y:auto;
-    border-top:1px solid var(--border);
+  .celebrate.open{opacity:1; pointer-events:auto;}
+  #confetti{position:absolute; inset:0; width:100%; height:100%; pointer-events:none;}
+  .cele-card{position:relative; text-align:center; max-width:340px; width:100%; transform:scale(.9); transition:transform .45s var(--ease);}
+  .celebrate.open .cele-card{transform:none;}
+  .cele-medal{
+    width:108px; height:108px; margin:0 auto 18px; border-radius:50%;
+    background:var(--grad); display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 0 10px rgba(255,46,99,.12), 0 20px 50px -10px var(--accent);
+    animation:medal 1.4s var(--ease);
   }
-  .sheet.open{transform:translateY(0);}
-  .sheet h3{margin:0 0 14px; font-size:18px; font-weight:700;}
-  .sheet-row{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:13px 0; border-bottom:1px solid var(--border);
+  .cele-medal b{font-family:'Oswald',sans-serif; font-size:34px; font-weight:700;}
+  @keyframes medal{0%{transform:scale(.3) rotate(-30deg); opacity:0}60%{transform:scale(1.1) rotate(6deg); opacity:1}100%{transform:none}}
+  .cele-title{font-size:34px; line-height:1.05; text-transform:uppercase;}
+  .cele-title span{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .cele-sub{color:var(--muted); font-size:14px; margin:10px 0 18px; line-height:1.45;}
+  .cele-stats{display:flex; gap:8px; margin-bottom:18px;}
+  .cele-stats div{flex:1; background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:11px 6px;}
+  .cele-stats b{display:block; font-family:'Oswald',sans-serif; font-size:22px;}
+  .cele-stats small{font-size:10px; color:var(--faint); font-weight:800; letter-spacing:1px;}
+  .next-up{background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:12px; margin-bottom:14px; text-align:left;}
+  .next-up small{font-size:10.5px; color:var(--faint); font-weight:800; letter-spacing:1.5px;}
+  .next-up b{display:block; font-size:16px; margin-top:3px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation:none !important; transition:none !important;}
   }
-  .sheet-row:last-child{border-bottom:none;}
-  .sheet-btn{
-    background:var(--bg-soft); border:1.5px solid var(--border-strong); color:var(--text);
-    padding:8px 14px; border-radius:8px; font-size:13px; font-weight:600;
-  }
-  .day-jump{display:flex; flex-wrap:wrap; gap:8px; margin-top:6px;}
-  .day-jump button{
-    padding:8px 13px; border-radius:8px; border:1.5px solid var(--border-strong);
-    background:var(--bg-soft); color:var(--text-muted); font-size:13px; font-weight:600;
-  }
-  .day-jump button.active{background:var(--accent); border-color:var(--accent); color:#fff;}
-  .rules-list{font-size:13px; color:var(--text-muted); line-height:1.55;}
-  .rules-list div{margin-bottom:9px;}
-  .rules-list b{color:var(--text); font-weight:700;}
-  .danger{color:#B3392B; border-color:#EBC9C3; background:#FBEEEC;}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="topbar">
-    <div class="brand">GYMX</div>
-    <button class="menu-btn" id="menuBtn">&#8942;</button>
+<div id="app">
+  <div class="top">
+    <svg class="logo" viewBox="0 0 100 100" aria-hidden="true">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FF2E63"/><stop offset="1" stop-color="#FF8A3D"/></linearGradient></defs>
+      <rect width="100" height="100" rx="24" fill="#16161C"/>
+      <path d="M70 28L30 72" stroke="#fff" stroke-width="15" stroke-linecap="round"/>
+      <path d="M30 28L70 72" stroke="#16161C" stroke-width="24" stroke-linecap="round"/>
+      <path d="M30 28L70 72" stroke="url(#lg)" stroke-width="15" stroke-linecap="round"/>
+    </svg>
+    <div class="wordmark display">GYM<span>X</span></div>
+    <div class="spacer"></div>
+    <button class="ver-pill" id="verPill">V2</button>
+    <button class="icon-btn" id="menuBtn" aria-label="Menu">&#8942;</button>
+    <div class="top-bar-progress"><i id="topProg"></i></div>
   </div>
-  <div class="day-count display" id="dayCount">DAY 1/5</div>
-  <div class="day-focus" id="dayFocus">Upper A</div>
-  <div class="ticks" id="ticks"></div>
-  <div class="progress-label" id="progressLabel">0 of 9 done</div>
-</header>
 
-<main id="main"></main>
+  <section class="hero" id="hero">
+    <div class="hero-wm" id="heroWm">01</div>
+    <div class="hero-left">
+      <div class="hero-kicker" id="heroKicker">DAY 1 OF 5</div>
+      <div class="hero-title display" id="heroTitle">—</div>
+      <div class="hero-sub" id="heroSub"></div>
+    </div>
+    <div class="ring" id="ring">
+      <svg viewBox="0 0 84 84">
+        <circle class="track" cx="42" cy="42" r="36" fill="none" stroke-width="8"/>
+        <circle class="val" id="ringVal" cx="42" cy="42" r="36" fill="none" stroke-width="8" stroke-linecap="round"/>
+      </svg>
+      <div class="ring-pct"><b id="pct">0%</b><small>DONE</small></div>
+    </div>
+  </section>
+
+  <div class="cycle" id="cycle"></div>
+  <div class="stats" id="stats"></div>
+  <main id="list"></main>
+</div>
 
 <footer>
-  <button class="finish-btn" id="finishBtn" disabled>Finish day</button>
-  <a class="force-link" id="forceLink">Finish anyway, skip the rest</a>
+  <button class="cta" id="cta">START</button>
+  <button class="skip" id="skip">Finish anyway, skip the rest</button>
 </footer>
 
-<div class="sheet-overlay" id="overlay"></div>
+<div class="overlay" id="overlay"></div>
 <div class="sheet" id="sheet">
-  <h3>Menu</h3>
-  <div class="sheet-row">
-    <span>Jump to a day</span>
-  </div>
-  <div class="day-jump" id="dayJump"></div>
+  <div class="grab"></div>
+  <h3>VERSION SWITCHER</h3>
+  <div id="versions"></div>
+  <h3>RULES FOR THIS PLAN</h3>
+  <div class="rules" id="rules"></div>
+  <button class="danger" id="resetBtn">Reset progress for this version</button>
+</div>
 
-  <div class="sheet-row" style="margin-top:16px;">
-    <span>Reset all progress</span>
-    <button class="sheet-btn danger" id="resetBtn">Reset</button>
-  </div>
-
-  <h3 style="margin-top:24px;">Crowded gym rules</h3>
-  <div class="rules-list">
-    <div><b>2+ people waiting</b> — switch to Option 1 immediately.</div>
-    <div><b>Option 1 occupied</b> — use Option 2.</div>
-    <div><b>High priority lifts</b> — only worth waiting for if you're progressing that exact movement.</div>
-    <div><b>Low priority / accessories</b> — never queue, just switch.</div>
-    <div><b>Pain rule</b> — pain beats the hierarchy. Stop or reduce a painful variation and use a pain-free option.</div>
-    <div><b>Progression</b> — progress whichever variation you actually performed, not just the primary lift.</div>
+<div class="celebrate" id="celebrate">
+  <canvas id="confetti"></canvas>
+  <div class="cele-card">
+    <div class="cele-medal"><b id="celeNum">01</b></div>
+    <div class="cele-title display" id="celeTitle">DAY 1 <span>CRUSHED</span></div>
+    <div class="cele-sub" id="celeSub"></div>
+    <div class="cele-stats" id="celeStats"></div>
+    <div class="next-up"><small>NEXT UP</small><b id="celeNext"></b></div>
+    <button class="cta ready" id="celeGo">LET'S GO</button>
   </div>
 </div>
 
 <script>
 /* =====================================================================
-   EDIT YOUR WORKOUT HERE
+   EDIT YOUR WORKOUT PLANS HERE
    ---------------------------------------------------------------------
-   This is the only section you (or Claude, next time) should touch to
-   change the plan. Each day is one object in DAYS[]. Each exercise is:
-   { phase, name, alt1, alt2, sets, reps, rest, notes, rule }
-   alt1 / alt2 / rest / notes / rule can be left as "" if not needed.
-   "rule" is the specific crowded-gym substitution instruction for that
-   exact exercise. The app just loops through DAYS in order, 1 -> 2 ->
-   3 -> 4 -> 5 -> 1..., advancing only when a day is finished — it has
-   no idea what the real weekday is, so skipped/rest days don't break
-   the sequence.
+   PROGRAMS holds every version. Each version is:
+   { id, badge, name, desc, tip, rules:[...], days:[ {title, items:[...]} ] }
+
+   Each item (exercise) can use these fields — leave out what you don't need:
+     name   : main exercise                       (required)
+     opts   : ["swap 1","swap 2","swap 3"]        substitutes
+     sets   : "3"      reps: "8–12"
+     effort : "1–2 RIR"   rest: "2 min"
+     tag    : muscle chip, e.g. "Quads"           (coloured label)
+     sub    : small grey line, e.g. "Knee-dominant"
+     group  : section header, e.g. "Warm-up"      (a new header shows when it changes)
+     notes  : orange line    rule : crowded-gym rule shown under swaps
+
+   To add V3 later: copy a whole version block, change id/badge/name, edit days.
+   The app loops Day 1 → … → last day → Day 1, only advancing when you finish.
 ===================================================================== */
-const DAYS = [
+const PROGRAMS = [
   {
-    focus: "Upper A",
-    exercises: [
-      {phase:"Warm-up", name:"Treadmill / bike / cross-trainer", alt1:"", alt2:"", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace", rule:"Use any available cardio station"},
-      {phase:"Upper A", name:"Incline DB press", alt1:"Incline machine press", alt2:"Incline Smith press", sets:"3", reps:"8–10", rest:"2 min", notes:"", rule:"Use Option 1 immediately if bench/DB setup is occupied"},
-      {phase:"Upper A", name:"Chest press", alt1:"Flat DB press", alt2:"Bench press", sets:"2", reps:"8–10", rest:"2 min", notes:"", rule:"Do not queue for machine"},
-      {phase:"Upper A", name:"Lat pulldown", alt1:"Neutral-grip pulldown", alt2:"Assisted pull-up", sets:"3", reps:"8–12", rest:"2 min", notes:"", rule:"Switch if pulldown station has 2+ people waiting"},
-      {phase:"Upper A", name:"Chest-supported row", alt1:"Seated cable row", alt2:"1-arm DB row", sets:"3", reps:"6–10", rest:"2 min", notes:"", rule:"Use any free row option"},
-      {phase:"Upper A", name:"DB lateral raise", alt1:"Cable lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"12–20", rest:"60–90 sec", notes:"", rule:"Never queue for lateral raises"},
-      {phase:"Upper A", name:"Overhead cable extension", alt1:"DB overhead extension", alt2:"EZ-bar overhead extension", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"Mild shoulder pain: use pain-free version", rule:"If cable occupied, use DB option"},
-      {phase:"Upper A", name:"DB curl", alt1:"Cable curl", alt2:"EZ-bar curl", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Use whichever is free"},
-      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy", rule:"Use any available cardio station"}
+    id: "v1", badge: "V1",
+    name: "Recomp · Crowded gym",
+    desc: "Upper / Lower split + full-body circuit. Warm-up and cardio included.",
+    tip: "",
+    rules: [
+      ["2+ people waiting", "switch to Option 1 immediately."],
+      ["Option 1 occupied", "use Option 2."],
+      ["High-priority lifts", "only worth waiting for if you're progressing that exact movement."],
+      ["Accessories", "never queue, just switch."],
+      ["Pain rule", "pain beats the hierarchy — use a pain-free option."],
+      ["Progression", "progress whichever variation you actually performed."]
+    ],
+    days: [
+      { title: "Upper A", items: [
+        {group:"Warm-up", name:"Treadmill / bike / cross-trainer", sets:"1", reps:"5–8 min", notes:"Easy pace", rule:"Use any available cardio station"},
+        {group:"Upper A", name:"Incline DB press", opts:["Incline machine press","Incline Smith press"], sets:"3", reps:"8–10", rest:"2 min", rule:"Use Option 1 immediately if bench/DB setup is occupied"},
+        {group:"Upper A", name:"Chest press", opts:["Flat DB press","Bench press"], sets:"2", reps:"8–10", rest:"2 min", rule:"Do not queue for machine"},
+        {group:"Upper A", name:"Lat pulldown", opts:["Neutral-grip pulldown","Assisted pull-up"], sets:"3", reps:"8–12", rest:"2 min", rule:"Switch if pulldown station has 2+ people waiting"},
+        {group:"Upper A", name:"Chest-supported row", opts:["Seated cable row","1-arm DB row"], sets:"3", reps:"6–10", rest:"2 min", rule:"Use any free row option"},
+        {group:"Upper A", name:"DB lateral raise", opts:["Cable lateral raise","Machine lateral raise"], sets:"3", reps:"12–20", rest:"60–90 sec", rule:"Never queue for lateral raises"},
+        {group:"Upper A", name:"Overhead cable extension", opts:["DB overhead extension","EZ-bar overhead extension"], sets:"2", reps:"10–15", rest:"60–90 sec", notes:"Mild shoulder pain: use pain-free version", rule:"If cable occupied, use DB option"},
+        {group:"Upper A", name:"DB curl", opts:["Cable curl","EZ-bar curl"], sets:"2", reps:"10–15", rest:"60–90 sec", rule:"Use whichever is free"},
+        {group:"Cardio", name:"Incline treadmill", opts:["Bike","Cross-trainer"], sets:"1", reps:"10–15 min", notes:"Moderate/easy", rule:"Use any available cardio station"}
+      ]},
+      { title: "Lower A", items: [
+        {group:"Warm-up", name:"Bike", opts:["Treadmill","Cross-trainer"], sets:"1", reps:"5–8 min", notes:"Easy pace", rule:"Use any available station"},
+        {group:"Lower A", name:"Leg press", opts:["Hack squat","Goblet squat"], sets:"3", reps:"6–10", rest:"2–3 min", notes:"Pain-free knee depth", rule:"Switch immediately if queue"},
+        {group:"Lower A", name:"Bulgarian split squat", opts:["Reverse lunge","DB split squat"], sets:"2", reps:"8–10/leg", rest:"2 min", notes:"Control knee alignment", rule:"No equipment queue"},
+        {group:"Lower A", name:"Leg extension", opts:["Step-up","Spanish squat"], sets:"2", reps:"10–15", rest:"60–90 sec", notes:"Pain-free range", rule:"Do not queue"},
+        {group:"Lower A", name:"RDL", opts:["DB RDL","Cable pull-through"], sets:"3", reps:"6–10", rest:"2–3 min", notes:"Neutral spine", rule:"Use DB RDL if rack unavailable"},
+        {group:"Lower A", name:"Leg curl", opts:["Seated/lying curl variation","Slider curl"], sets:"2", reps:"10–15", rest:"60–90 sec", rule:"Skip queue and use slider/curl alternative"},
+        {group:"Lower A", name:"Adductor machine", opts:["Wide-stance leg press","Controlled split squat"], sets:"2", reps:"12–20", rest:"60–90 sec", notes:"Optional accessory", rule:"Never wait; skip to alternative"},
+        {group:"Lower A", name:"Calf raise", opts:["Leg-press calf raise","DB calf raise"], sets:"3", reps:"10–15", rest:"60–90 sec", rule:"Use any available calf option"},
+        {group:"Lower A", name:"Cable crunch", opts:["Reverse crunch","Dead bug"], sets:"2", reps:"10–15", rest:"60 sec", rule:"If cable occupied, use bodyweight option"},
+        {group:"Lower A", name:"Pallof press", opts:["Side plank","Cable woodchop"], sets:"2", reps:"10–15/side", rest:"60 sec", rule:"Use side plank if cable occupied"},
+        {group:"Cardio", name:"Incline treadmill", opts:["Bike","Cross-trainer"], sets:"1", reps:"10–15 min", notes:"Moderate/easy", rule:"Use any available station"}
+      ]},
+      { title: "Upper B", items: [
+        {group:"Warm-up", name:"Bike", opts:["Treadmill","Cross-trainer"], sets:"1", reps:"5–8 min", notes:"Easy pace", rule:"Use any available station"},
+        {group:"Upper B", name:"Neutral-grip pulldown", opts:["Lat pulldown","Assisted pull-up"], sets:"3", reps:"8–12", rest:"2 min", rule:"Switch immediately if queue"},
+        {group:"Upper B", name:"Machine chest press", opts:["Flat DB press","Bench press"], sets:"3", reps:"8–12", rest:"2 min", rule:"Use DB press if machine occupied"},
+        {group:"Upper B", name:"Seated cable row", opts:["Chest-supported row","1-arm DB row"], sets:"3", reps:"10–12", rest:"90–120 sec", rule:"Don't queue for cable"},
+        {group:"Upper B", name:"Incline machine press", opts:["Incline DB press","Incline Smith press"], sets:"2", reps:"10–12", rest:"90–120 sec", rule:"Use whichever incline station is free"},
+        {group:"Upper B", name:"Reverse pec deck", opts:["Cable rear-delt fly","DB rear-delt fly"], sets:"3", reps:"12–20", rest:"60–90 sec", rule:"Never wait for rear-delt machine"},
+        {group:"Upper B", name:"Cable lateral raise", opts:["DB lateral raise","Machine lateral raise"], sets:"3", reps:"12–20", rest:"60–90 sec", rule:"Use DB if cable occupied"},
+        {group:"Upper B", name:"DB shrug", opts:["Machine shrug","Cable shrug"], sets:"2", reps:"10–15", rest:"60–90 sec", rule:"Never queue"},
+        {group:"Upper B", name:"Hammer curl", opts:["Rope hammer curl","Cross-body hammer curl"], sets:"2", reps:"10–15", rest:"60–90 sec", rule:"Use any free option"},
+        {group:"Upper B", name:"Overhead cable extension", opts:["DB overhead extension","EZ-bar overhead extension"], sets:"2", reps:"10–15", rest:"60–90 sec", notes:"Mild shoulder pain: use pain-free version", rule:"If cable occupied, use DB option"},
+        {group:"Cardio", name:"Incline treadmill", opts:["Bike","Cross-trainer"], sets:"1", reps:"15–20 min", notes:"Moderate/easy", rule:"Use any available station"}
+      ]},
+      { title: "Lower B", items: [
+        {group:"Warm-up", name:"Bike", opts:["Treadmill","Cross-trainer"], sets:"1", reps:"5–8 min", notes:"Easy pace", rule:"Use any available station"},
+        {group:"Lower B", name:"RDL", opts:["DB RDL","Cable pull-through"], sets:"3", reps:"6–10", rest:"2–3 min", rule:"Use DB RDL if rack unavailable"},
+        {group:"Lower B", name:"Hip thrust", opts:["Glute bridge","Smith hip thrust"], sets:"3", reps:"8–12", rest:"2 min", rule:"Do not wait for bench; use glute bridge"},
+        {group:"Lower B", name:"Leg press", opts:["Hack squat","DB squat"], sets:"3", reps:"8–12", rest:"2 min", notes:"Pain-free knee depth", rule:"Switch immediately if queue"},
+        {group:"Lower B", name:"Leg curl", opts:["Seated/lying curl variation","Slider curl"], sets:"3", reps:"10–15", rest:"60–90 sec", rule:"Skip queue"},
+        {group:"Lower B", name:"Abductor machine", opts:["Cable abduction","Side-lying abduction"], sets:"2", reps:"12–20", rest:"60–90 sec", notes:"Optional accessory", rule:"Never wait; use alternative"},
+        {group:"Lower B", name:"Leg extension", opts:["Step-up","Split squat"], sets:"2", reps:"12–15", rest:"60–90 sec", rule:"Skip queue"},
+        {group:"Lower B", name:"Calf raise", opts:["Leg-press calf raise","DB calf raise"], sets:"3", reps:"12–15", rest:"60–90 sec", rule:"Use any available calf option"},
+        {group:"Lower B", name:"Cable crunch", opts:["Reverse crunch","Dead bug"], sets:"2", reps:"10–15", rest:"60 sec", rule:"Use bodyweight if cable occupied"},
+        {group:"Lower B", name:"Side plank", opts:["Pallof press","Cable woodchop"], sets:"2", reps:"20–45 sec/side", rest:"60 sec", rule:"No equipment required"},
+        {group:"Cardio", name:"Incline treadmill", opts:["Bike","Cross-trainer"], sets:"1", reps:"10–15 min", notes:"Moderate/easy", rule:"Use any available station"}
+      ]},
+      { title: "Full body · Circuit", items: [
+        {group:"Warm-up", name:"Treadmill / bike / cross-trainer", sets:"1", reps:"5–8 min", notes:"Easy pace", rule:"Use any available station"},
+        {group:"Circuit A", name:"Chest press", opts:["DB press","Push-ups"], sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use any free chest option"},
+        {group:"Circuit A", name:"Cable row", opts:["DB row","Machine row"], sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use any free row option"},
+        {group:"Circuit A", name:"Leg press", opts:["Goblet squat","Split squat"], sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use any free option"},
+        {group:"Circuit B", name:"Lat pulldown", opts:["Assisted pull-up","Neutral pulldown"], sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Switch immediately if station occupied"},
+        {group:"Circuit B", name:"DB RDL", opts:["RDL","Cable pull-through"], sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use free option"},
+        {group:"Circuit B", name:"DB lateral raise", opts:["Cable lateral raise","Machine lateral raise"], sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Never queue"},
+        {group:"Circuit C", name:"Hammer curl", opts:["DB curl","Cable curl"], sets:"2", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 2 rounds", rule:"Use any free option"},
+        {group:"Circuit C", name:"Cable pressdown", opts:["DB extension","Overhead cable extension"], sets:"2", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 2 rounds", rule:"Use DB if cable occupied"},
+        {group:"Circuit C", name:"Plank", opts:["Dead bug","Side plank"], sets:"2", reps:"30–60 sec", rest:"60–90 sec after round", notes:"Complete 2 rounds", rule:"No equipment required"},
+        {group:"Cardio", name:"Incline treadmill", opts:["Bike","Cross-trainer"], sets:"1", reps:"20–30 min", notes:"Moderate", rule:"Use any available station"},
+        {group:"Cooldown", name:"Easy walking", sets:"1", reps:"3–5 min"}
+      ]}
     ]
   },
   {
-    focus: "Lower A",
-    exercises: [
-      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace", rule:"Use any available station"},
-      {phase:"Lower A", name:"Leg press", alt1:"Hack squat", alt2:"Goblet squat", sets:"3", reps:"6–10", rest:"2–3 min", notes:"Pain-free knee depth", rule:"Switch immediately if queue"},
-      {phase:"Lower A", name:"Bulgarian split squat", alt1:"Reverse lunge", alt2:"DB split squat", sets:"2", reps:"8–10/leg", rest:"2 min", notes:"Control knee alignment", rule:"No equipment queue"},
-      {phase:"Lower A", name:"Leg extension", alt1:"Step-up", alt2:"Spanish squat", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"Pain-free range", rule:"Do not queue"},
-      {phase:"Lower A", name:"RDL", alt1:"DB RDL", alt2:"Cable pull-through", sets:"3", reps:"6–10", rest:"2–3 min", notes:"Neutral spine", rule:"Use DB RDL if rack unavailable"},
-      {phase:"Lower A", name:"Leg curl", alt1:"Seated/lying curl variation", alt2:"Slider curl", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Skip queue and use slider/curl alternative"},
-      {phase:"Lower A", name:"Adductor machine", alt1:"Wide-stance leg press", alt2:"Controlled split squat", sets:"2", reps:"12–20", rest:"60–90 sec", notes:"Optional accessory", rule:"Never wait; skip to alternative"},
-      {phase:"Lower A", name:"Calf raise", alt1:"Leg-press calf raise", alt2:"DB calf raise", sets:"3", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Use any available calf option"},
-      {phase:"Lower A", name:"Cable crunch", alt1:"Reverse crunch", alt2:"Dead bug", sets:"2", reps:"10–15", rest:"60 sec", notes:"", rule:"If cable occupied, use bodyweight option"},
-      {phase:"Lower A", name:"Pallof press", alt1:"Side plank", alt2:"Cable woodchop", sets:"2", reps:"10–15/side", rest:"60 sec", notes:"", rule:"Use side plank if cable occupied"},
-      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy", rule:"Use any available station"}
-    ]
-  },
-  {
-    focus: "Upper B",
-    exercises: [
-      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace", rule:"Use any available station"},
-      {phase:"Upper B", name:"Neutral-grip pulldown", alt1:"Lat pulldown", alt2:"Assisted pull-up", sets:"3", reps:"8–12", rest:"2 min", notes:"", rule:"Switch immediately if queue"},
-      {phase:"Upper B", name:"Machine chest press", alt1:"Flat DB press", alt2:"Bench press", sets:"3", reps:"8–12", rest:"2 min", notes:"", rule:"Use DB press if machine occupied"},
-      {phase:"Upper B", name:"Seated cable row", alt1:"Chest-supported row", alt2:"1-arm DB row", sets:"3", reps:"10–12", rest:"90–120 sec", notes:"", rule:"Don't queue for cable"},
-      {phase:"Upper B", name:"Incline machine press", alt1:"Incline DB press", alt2:"Incline Smith press", sets:"2", reps:"10–12", rest:"90–120 sec", notes:"", rule:"Use whichever incline station is free"},
-      {phase:"Upper B", name:"Reverse pec deck", alt1:"Cable rear-delt fly", alt2:"DB rear-delt fly", sets:"3", reps:"12–20", rest:"60–90 sec", notes:"", rule:"Never wait for rear-delt machine"},
-      {phase:"Upper B", name:"Cable lateral raise", alt1:"DB lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"12–20", rest:"60–90 sec", notes:"", rule:"Use DB if cable occupied"},
-      {phase:"Upper B", name:"DB shrug", alt1:"Machine shrug", alt2:"Cable shrug", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Never queue"},
-      {phase:"Upper B", name:"Hammer curl", alt1:"Rope hammer curl", alt2:"Cross-body hammer curl", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Use any free option"},
-      {phase:"Upper B", name:"Overhead cable extension", alt1:"DB overhead extension", alt2:"EZ-bar overhead extension", sets:"2", reps:"10–15", rest:"60–90 sec", notes:"Mild shoulder pain: use pain-free version", rule:"If cable occupied, use DB option"},
-      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"15–20 min", rest:"", notes:"Moderate/easy", rule:"Use any available station"}
-    ]
-  },
-  {
-    focus: "Lower B",
-    exercises: [
-      {phase:"Warm-up", name:"Bike", alt1:"Treadmill", alt2:"Cross-trainer", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace", rule:"Use any available station"},
-      {phase:"Lower B", name:"RDL", alt1:"DB RDL", alt2:"Cable pull-through", sets:"3", reps:"6–10", rest:"2–3 min", notes:"", rule:"Use DB RDL if rack unavailable"},
-      {phase:"Lower B", name:"Hip thrust", alt1:"Glute bridge", alt2:"Smith hip thrust", sets:"3", reps:"8–12", rest:"2 min", notes:"", rule:"Do not wait for bench; use glute bridge"},
-      {phase:"Lower B", name:"Leg press", alt1:"Hack squat", alt2:"DB squat", sets:"3", reps:"8–12", rest:"2 min", notes:"Pain-free knee depth", rule:"Switch immediately if queue"},
-      {phase:"Lower B", name:"Leg curl", alt1:"Seated/lying curl variation", alt2:"Slider curl", sets:"3", reps:"10–15", rest:"60–90 sec", notes:"", rule:"Skip queue"},
-      {phase:"Lower B", name:"Abductor machine", alt1:"Cable abduction", alt2:"Side-lying abduction", sets:"2", reps:"12–20", rest:"60–90 sec", notes:"Optional accessory", rule:"Never wait; use alternative"},
-      {phase:"Lower B", name:"Leg extension", alt1:"Step-up", alt2:"Split squat", sets:"2", reps:"12–15", rest:"60–90 sec", notes:"", rule:"Skip queue"},
-      {phase:"Lower B", name:"Calf raise", alt1:"Leg-press calf raise", alt2:"DB calf raise", sets:"3", reps:"12–15", rest:"60–90 sec", notes:"", rule:"Use any available calf option"},
-      {phase:"Lower B", name:"Cable crunch", alt1:"Reverse crunch", alt2:"Dead bug", sets:"2", reps:"10–15", rest:"60 sec", notes:"", rule:"Use bodyweight if cable occupied"},
-      {phase:"Lower B", name:"Side plank", alt1:"Pallof press", alt2:"Cable woodchop", sets:"2", reps:"20–45 sec/side", rest:"60 sec", notes:"", rule:"No equipment required"},
-      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"10–15 min", rest:"", notes:"Moderate/easy", rule:"Use any available station"}
-    ]
-  },
-  {
-    focus: "Full body — Circuit",
-    exercises: [
-      {phase:"Warm-up", name:"Treadmill / bike / cross-trainer", alt1:"", alt2:"", sets:"1", reps:"5–8 min", rest:"", notes:"Easy pace", rule:"Use any available station"},
-      {phase:"Circuit A", name:"Chest press", alt1:"DB press", alt2:"Push-ups", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use any free chest option"},
-      {phase:"Circuit A", name:"Cable row", alt1:"DB row", alt2:"Machine row", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use any free row option"},
-      {phase:"Circuit A", name:"Leg press", alt1:"Goblet squat", alt2:"Split squat", sets:"3", reps:"8–12", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use any free option"},
-      {phase:"Circuit B", name:"Lat pulldown", alt1:"Assisted pull-up", alt2:"Neutral pulldown", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Switch immediately if station occupied"},
-      {phase:"Circuit B", name:"DB RDL", alt1:"RDL", alt2:"Cable pull-through", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Use free option"},
-      {phase:"Circuit B", name:"DB lateral raise", alt1:"Cable lateral raise", alt2:"Machine lateral raise", sets:"3", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 3 rounds", rule:"Never queue"},
-      {phase:"Circuit C", name:"Hammer curl", alt1:"DB curl", alt2:"Cable curl", sets:"2", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 2 rounds", rule:"Use any free option"},
-      {phase:"Circuit C", name:"Cable pressdown", alt1:"DB extension", alt2:"Overhead cable extension", sets:"2", reps:"10–15", rest:"60–90 sec after round", notes:"Complete 2 rounds", rule:"Use DB if cable occupied"},
-      {phase:"Circuit C", name:"Plank", alt1:"Dead bug", alt2:"Side plank", sets:"2", reps:"30–60 sec", rest:"60–90 sec after round", notes:"Complete 2 rounds", rule:"No equipment required"},
-      {phase:"Cardio", name:"Incline treadmill", alt1:"Bike", alt2:"Cross-trainer", sets:"1", reps:"20–30 min", rest:"", notes:"Moderate", rule:"Use any available station"},
-      {phase:"Cooldown", name:"Easy walking", alt1:"", alt2:"", sets:"1", reps:"3–5 min", rest:"", notes:"", rule:""}
+    id: "v2", badge: "V2",
+    name: "Hypertrophy · Recomp regimen",
+    desc: "Legs/glutes-first 5-day split. One exercise per target, 1–2 RIR.",
+    tip: "<b>Do ONE exercise per card.</b> Swaps replace it — they're not extra work. Brief warm-up + 1–2 ramp-up sets on the first big lift (ramp-ups aren't working sets).",
+    rules: [
+      ["One exercise per target", "do ONE listed exercise. Options 1–3 are substitutions, not extra exercises."],
+      ["Crowded gym", "if primary equipment is unavailable or ≥2 people are waiting, use the first available option. Do not wait."],
+      ["Progression", "when every set reaches the top of the rep range at target RIR, increase load slightly next time."],
+      ["Effort", "most work at 1–2 RIR. Failure is not required."],
+      ["Shoulder", "use the grip/angle that remains tolerable. Stop if pain becomes clearly worse, sharp, or alters technique."],
+      ["Knee", "use controlled, tolerable ROM. Do not force painful depth/load."],
+      ["Session length", "complete listed work. Do not add exercises just because time remains."],
+      ["Tracking", "record the actual variation, load and reps performed."]
+    ],
+    days: [
+      { title: "Legs / Glutes", items: [
+        {tag:"Quads", sub:"Knee-dominant", name:"Leg Press", opts:["Hack Squat","Goblet Squat","Supported Split Squat"], sets:"3", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Glutes", sub:"Hip extension", name:"Hip Thrust / Glute Drive", opts:["Smith Hip Thrust","DB Glute Bridge","Cable Pull-Through"], sets:"3", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Hamstrings", sub:"Knee flexion", name:"Seated/Lying Leg Curl", opts:["DB Leg Curl","Slider Leg Curl","Stability-Ball Leg Curl"], sets:"3", reps:"10–15", effort:"1–2 RIR"},
+        {tag:"Calves", sub:"Plantar flexion", name:"Standing Calf Raise", opts:["Leg Press Calf Raise","Smith Calf Raise","Single-Leg Calf Raise"], sets:"3", reps:"10–15", effort:"1–2 RIR"}
+      ]},
+      { title: "Chest / Back", items: [
+        {tag:"Chest", sub:"Pectoralis major – upper", name:"Incline Machine/DB Press", opts:["Low-Incline DB Press","Low-Incline Smith Press","Cable Press"], sets:"3", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Back", sub:"Lats – extension/adduction", name:"Neutral-Grip Lat Pulldown", opts:["Assisted Neutral-Grip Pull-Up","Single-Arm Cable Pulldown","Band Pulldown"], sets:"3", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Chest", sub:"Pectoralis major – mid", name:"Machine Chest Press", opts:["Neutral-Grip DB Press","Cable Chest Press","Push-Up"], sets:"2", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Back", sub:"Mid-back – rhomboids/mid traps", name:"Chest-Supported Row", opts:["Seated Cable Row","Machine Row","One-Arm DB Row"], sets:"3", reps:"8–12", effort:"1–2 RIR"}
+      ]},
+      { title: "Legs / Glutes", items: [
+        {tag:"Glutes", sub:"Glute max – hip extension", name:"Romanian Deadlift", opts:["DB RDL","Smith RDL","Cable Pull-Through"], sets:"3", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Quads", sub:"Knee extension", name:"Leg Extension", opts:["Assisted Reverse Nordic","Spanish Squat","Bodyweight Squat"], sets:"2", reps:"10–15", effort:"1–2 RIR"},
+        {tag:"Glutes", sub:"Glute med/min – abduction", name:"Hip Abduction", opts:["Cable Hip Abduction","Side-Lying Hip Abduction","Banded Abduction"], sets:"2", reps:"12–20", effort:"1–2 RIR"},
+        {tag:"Hamstrings", sub:"Knee flexion", name:"Leg Curl", opts:["Seated Leg Curl","Slider Curl","Stability-Ball Curl"], sets:"2", reps:"10–15", effort:"1–2 RIR"},
+        {tag:"Calves", sub:"Plantar flexion", name:"Seated Calf Raise", opts:["Leg Press Calf Raise","Bent-Knee DB Calf Raise","Single-Leg Calf Raise"], sets:"3", reps:"10–15", effort:"1–2 RIR"}
+      ]},
+      { title: "Back / Arms", items: [
+        {tag:"Back", sub:"Lats – vertical pull", name:"Pulldown", opts:["Neutral-Grip Pulldown","Assisted Pull-Up","Single-Arm Cable Pulldown"], sets:"3", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Back", sub:"Mid/upper back – thickness", name:"Chest-Supported Row", opts:["Cable Row","Machine Row","One-Arm DB Row"], sets:"3", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Biceps", sub:"Long + short heads", name:"Cable Curl", opts:["Incline DB Curl","Preacher Curl","Machine Curl"], sets:"2", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Triceps", sub:"Long head", name:"Cable Overhead Extension", opts:["DB Overhead Extension","Cross-Body Cable Extension","Cable Pressdown"], sets:"2", reps:"10–15", effort:"1–2 RIR"},
+        {tag:"Traps", sub:"Upper traps – elevation", name:"DB/Smith Shrug", opts:["Machine Shrug","Cable Shrug","Farmer Carry"], sets:"2", reps:"10–15", effort:"1–2 RIR"}
+      ]},
+      { title: "Full Physique", items: [
+        {tag:"Glutes", sub:"Hip extension", name:"Glute Drive / Hip Thrust", opts:["Smith Hip Thrust","DB Glute Bridge","Cable Pull-Through"], sets:"2", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Chest", sub:"Pectoralis major – mid/lower", name:"Machine Chest Press", opts:["Cable Press","Neutral-Grip DB Press","Push-Up"], sets:"2", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Back", sub:"Mid-back/lats", name:"Cable or Machine Row", opts:["Chest-Supported Row","One-Arm Cable Row","One-Arm DB Row"], sets:"2", reps:"8–12", effort:"1–2 RIR"},
+        {tag:"Biceps", sub:"Brachialis/brachioradialis + biceps", name:"Hammer Curl", opts:["Rope Hammer Curl","Cross-Body Hammer Curl","Neutral-Grip Machine Curl"], sets:"2", reps:"10–15", effort:"1–2 RIR"},
+        {tag:"Triceps", sub:"Lateral/medial heads", name:"Cable Pressdown", opts:["Rope Pressdown","Single-Arm Cable Pressdown","Close-Grip Push-Up"], sets:"2", reps:"10–15", effort:"1–2 RIR"},
+        {tag:"Waist", sub:"Obliques/core – anti-rotation", name:"Pallof Press", opts:["Side Plank","Cable Chop","Dead Bug"], sets:"2", reps:"10–15/side", effort:"1–2 RIR"}
+      ]}
     ]
   }
 ];
+const DEFAULT_VERSION = "v2";
 /* =================== DO NOT EDIT BELOW THIS LINE ==================== */
 
-const STORAGE_KEY = "gymx_state_v2";
+const TAG_COLORS = {
+  quads:"#FF5C7A", glutes:"#FF8A3D", hamstrings:"#FFB03D", calves:"#F5D547",
+  chest:"#3DD6FF", back:"#5C8DFF", biceps:"#B57BFF", triceps:"#E07BFF",
+  traps:"#7BFFB0", waist:"#3DFFC8", shoulders:"#FF7BD0", core:"#3DFFC8"
+};
+const DAY_HUES = [
+  ["#FF2E63","#FF8A3D"], ["#7B2CFF","#FF2E90"], ["#FF6A00","#FFB23D"],
+  ["#0077FF","#00C2D1"], ["#00A86B","#2DD4BF"], ["#D6246E","#7B2CFF"], ["#E0A800","#FF5C3D"]
+];
+const KEY = "gymx_state_v3";
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-function loadState(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw) return JSON.parse(raw);
-  }catch(e){}
-  return { dayIndex: 0, completed: {} };
-}
-function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-
-let state = loadState();
-if(!state.completed) state.completed = {};
-if(state.dayIndex >= DAYS.length) state.dayIndex = 0;
-
-function currentCompletedSet(){
-  const key = String(state.dayIndex);
-  if(!state.completed[key]) state.completed[key] = [];
-  return state.completed[key];
-}
-
-function render(){
-  const day = DAYS[state.dayIndex];
-  const doneList = currentCompletedSet();
-
-  document.getElementById('dayCount').textContent = `DAY ${state.dayIndex+1}/${DAYS.length}`;
-  document.getElementById('dayFocus').textContent = day.focus;
-
-  const total = day.exercises.length;
-  const doneCount = doneList.length;
-  document.getElementById('progressLabel').textContent = `${doneCount} of ${total} done`;
-
-  const ticks = document.getElementById('ticks');
-  ticks.innerHTML = "";
-  day.exercises.forEach((ex, i) => {
-    const t = document.createElement('div');
-    t.className = 'tick' + (doneList.includes(i) ? ' done' : '');
-    ticks.appendChild(t);
-  });
-
-  const main = document.getElementById('main');
-  main.innerHTML = "";
-  let lastPhase = null;
-  day.exercises.forEach((ex, i) => {
-    if(ex.phase !== lastPhase){
-      const h = document.createElement('div');
-      h.className = 'phase-header';
-      h.textContent = ex.phase;
-      main.appendChild(h);
-      lastPhase = ex.phase;
-    }
-    const isDone = doneList.includes(i);
-    const card = document.createElement('div');
-    card.className = 'card' + (isDone ? ' done' : '');
-
-    const metaParts = [];
-    if(ex.sets) metaParts.push(`${ex.sets} sets`);
-    if(ex.reps) metaParts.push(ex.reps);
-    if(ex.rest) metaParts.push(`rest ${ex.rest}`);
-
-    const hasAlts = ex.alt1 || ex.alt2;
-
-    card.innerHTML = `
-      <div class="checkbox">${isDone ? '&#10003;' : ''}</div>
-      <div class="card-body">
-        <div class="ex-name">${ex.name}</div>
-        <div class="ex-meta">${metaParts.join(' · ')}</div>
-        ${ex.notes ? `<div class="ex-notes">${ex.notes}</div>` : ''}
-        ${hasAlts ? `<div class="alt-toggle" data-idx="${i}">alternatives</div>
-        <div class="alt-box" id="alt-${i}">
-          ${ex.alt1 ? `<div><b>Option 1</b> — ${ex.alt1}</div>` : ''}
-          ${ex.alt2 ? `<div><b>Option 2</b> — ${ex.alt2}</div>` : ''}
-          ${ex.rule ? `<div class="rule">${ex.rule}</div>` : ''}
-        </div>` : ''}
-      </div>
-    `;
-    card.addEventListener('click', (e) => {
-      if(e.target.closest('.alt-toggle')) return;
-      toggleExercise(i);
-    });
-    main.appendChild(card);
-  });
-
-  main.querySelectorAll('.alt-toggle').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const box = document.getElementById('alt-' + btn.dataset.idx);
-      box.classList.toggle('open');
-    });
-  });
-
-  const finishBtn = document.getElementById('finishBtn');
-  const forceLink = document.getElementById('forceLink');
-  const allDone = doneCount === total;
-  finishBtn.disabled = !allDone;
-  finishBtn.textContent = allDone
-    ? `Finish day → Day ${(state.dayIndex+1) % DAYS.length + 1}`
-    : `${total - doneCount} exercise${total-doneCount===1?'':'s'} left`;
-  forceLink.style.display = allDone ? 'none' : 'block';
-
-  renderDayJump();
-}
-
-function toggleExercise(i){
-  const list = currentCompletedSet();
-  const pos = list.indexOf(i);
-  if(pos === -1) list.push(i); else list.splice(pos,1);
-  saveState();
-  render();
-}
-
-function advanceDay(){
-  state.dayIndex = (state.dayIndex + 1) % DAYS.length;
-  saveState();
-  render();
-  window.scrollTo({top:0, behavior:'smooth'});
-}
-
-document.getElementById('finishBtn').addEventListener('click', () => {
-  if(currentCompletedSet().length === DAYS[state.dayIndex].exercises.length) advanceDay();
-});
-document.getElementById('forceLink').addEventListener('click', () => advanceDay());
-
-// Menu sheet
-const overlay = document.getElementById('overlay');
-const sheet = document.getElementById('sheet');
-function openSheet(){ overlay.classList.add('open'); sheet.classList.add('open'); }
-function closeSheet(){ overlay.classList.remove('open'); sheet.classList.remove('open'); }
-document.getElementById('menuBtn').addEventListener('click', openSheet);
-overlay.addEventListener('click', closeSheet);
-
-function renderDayJump(){
-  const wrap = document.getElementById('dayJump');
-  wrap.innerHTML = "";
-  DAYS.forEach((d, i) => {
-    const b = document.createElement('button');
-    b.textContent = `Day ${i+1}`;
-    if(i === state.dayIndex) b.classList.add('active');
-    b.addEventListener('click', () => {
-      state.dayIndex = i;
-      saveState();
-      render();
-      closeSheet();
-      window.scrollTo({top:0});
-    });
-    wrap.appendChild(b);
-  });
-}
-
-document.getElementById('resetBtn').addEventListener('click', () => {
-  if(confirm('Reset all progress and go back to Day 1?')){
-    state = { dayIndex: 0, completed: {} };
-    saveState();
-    render();
-    closeSheet();
+/* ---------- state ---------- */
+function freshProg(){ return { day:0, done:{}, sessions:0, full:0, dates:[] }; }
+function load(){
+  let s = null;
+  try{ s = JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+  if(!s || !s.prog){
+    s = { active: DEFAULT_VERSION, prog:{} };
+    // carry over progress from the previous app version into V1
+    try{
+      const old = JSON.parse(localStorage.getItem("gymx_state_v2"));
+      if(old && typeof old.dayIndex === "number"){
+        s.prog.v1 = freshProg();
+        s.prog.v1.day = old.dayIndex;
+        s.prog.v1.done = old.completed || {};
+      }
+    }catch(e){}
   }
-});
+  PROGRAMS.forEach(p => { if(!s.prog[p.id]) s.prog[p.id] = freshProg(); });
+  if(!PROGRAMS.find(p => p.id === s.active)) s.active = PROGRAMS[0].id;
+  return s;
+}
+let state = load();
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
 
-render();
+const P  = () => PROGRAMS.find(p => p.id === state.active);
+const S  = () => { const s = state.prog[state.active]; if(s.day >= P().days.length) s.day = 0; return s; };
+const doneList = (d) => { const s = S(); const k = String(d ?? s.day); if(!s.done[k]) s.done[k] = []; return s.done[k]; };
+const pctOf = (d) => { const n = P().days[d].items.length; return n ? Math.round(doneList(d).length / n * 100) : 0; };
+
+/* ---------- render ---------- */
+const RING_C = 2 * Math.PI * 36;
+$("ringVal").style.strokeDasharray = RING_C;
+let shownPct = 0;
+
+function renderAll(){
+  const p = P(), s = S(), day = p.days[s.day];
+  const [h1, h2] = DAY_HUES[s.day % DAY_HUES.length];
+  const hero = $("hero");
+  hero.style.setProperty("--h1", h1); hero.style.setProperty("--h2", h2);
+  $("heroWm").textContent = String(s.day + 1).padStart(2, "0");
+  $("heroKicker").textContent = `DAY ${s.day + 1} OF ${p.days.length}`;
+  $("heroTitle").textContent = day.title;
+  const totalSets = day.items.reduce((a, x) => a + (parseInt(x.sets) || 0), 0);
+  const tags = [...new Set(day.items.map(x => x.tag).filter(Boolean))];
+  $("heroSub").textContent = tags.length
+    ? `${tags.join(" · ")}`
+    : `${day.items.length} exercises · ${totalSets} sets`;
+  $("verPill").textContent = p.badge;
+
+  // cycle strip
+  const cyc = $("cycle"); cyc.innerHTML = "";
+  p.days.forEach((d, i) => {
+    const b = document.createElement("button");
+    b.className = "cyc" + (i < s.day ? " past" : "") + (i === s.day ? " current" : "");
+    const w = i === s.day ? pctOf(i) : (i < s.day ? 100 : 0);
+    b.innerHTML = `<b>D${i+1}</b><small>${esc(shortTitle(d.title))}</small><div class="fill" style="width:${w}%"></div>`;
+    b.onclick = () => { if(i !== s.day){ s.day = i; save(); swapRender(); } };
+    cyc.appendChild(b);
+  });
+
+  // stats
+  const week = sessionsThisWeek();
+  $("stats").innerHTML = `
+    <div class="stat">${ICON.flame}<b>${s.sessions}</b> sessions</div>
+    <div class="stat">${ICON.loop}Cycle <b>${Math.floor(s.sessions / p.days.length) + 1}</b></div>
+    <div class="stat">${ICON.cal}<b>${week}</b> this week</div>`;
+
+  // list
+  const list = $("list"); list.innerHTML = "";
+  if(p.tip){ const t = document.createElement("div"); t.className = "tip"; t.innerHTML = p.tip; list.appendChild(t); }
+  const dl = doneList();
+  let lastGroup = null;
+  day.items.forEach((ex, i) => {
+    if(ex.group && ex.group !== lastGroup){
+      const g = document.createElement("div"); g.className = "group"; g.textContent = ex.group; list.appendChild(g);
+      lastGroup = ex.group;
+    }
+    list.appendChild(cardFor(ex, i, dl.includes(i)));
+  });
+
+  shownPct = pctOf(s.day);
+  updateProgress(false);
+}
+
+function shortTitle(t){ const a = t.split(/[\/·]/)[0].trim(); return a.length > 7 ? a.split(" ")[0] : a; }
+
+function cardFor(ex, i, isDone){
+  const c = document.createElement("div");
+  c.className = "card" + (isDone ? " done" : "");
+  c.style.setProperty("--i", i);
+  const col = TAG_COLORS[(ex.tag || "").toLowerCase()] || "#FF8A3D";
+  const meta = [];
+  if(ex.sets && ex.reps) meta.push(`<b>${esc(ex.sets)} × ${esc(ex.reps)}</b>`);
+  else if(ex.reps) meta.push(`<b>${esc(ex.reps)}</b>`);
+  if(ex.effort) meta.push(esc(ex.effort));
+  if(ex.rest) meta.push(`rest ${esc(ex.rest)}`);
+  const opts = ex.opts || [];
+  c.innerHTML = `
+    <div class="check">${String(i+1).padStart(2,"0")}
+      <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="body">
+      ${ex.tag ? `<span class="chip" style="--c:${col}">${esc(ex.tag)}</span>` : ""}
+      <div class="name">${esc(ex.name)}</div>
+      ${meta.length ? `<div class="meta">${meta.join(" · ")}</div>` : ""}
+      ${ex.sub ? `<div class="sub">${esc(ex.sub)}</div>` : ""}
+      ${ex.notes ? `<div class="note">${esc(ex.notes)}</div>` : ""}
+      ${opts.length ? `
+        <button class="opt-btn">${opts.length} swap${opts.length > 1 ? "s" : ""} <span class="car">▾</span></button>
+        <div class="opts"><div class="opts-inner">
+          ${opts.map((o, k) => `<div class="opt"><span>OPT ${k+1}</span>${esc(o)}</div>`).join("")}
+          ${ex.rule ? `<div class="rule">${esc(ex.rule)}</div>` : ""}
+        </div></div>` : ""}
+    </div>`;
+  const btn = c.querySelector(".opt-btn");
+  if(btn){
+    btn.addEventListener("click", e => {
+      e.stopPropagation();
+      const box = c.querySelector(".opts");
+      const open = btn.classList.toggle("open");
+      box.style.maxHeight = open ? box.scrollHeight + "px" : "0px";
+    });
+  }
+  c.addEventListener("click", () => toggle(i, c));
+  return c;
+}
+
+function toggle(i, card){
+  const dl = doneList();
+  const pos = dl.indexOf(i);
+  if(pos === -1){ dl.push(i); card.classList.add("done", "pop"); setTimeout(() => card.classList.remove("pop"), 460); }
+  else { dl.splice(pos, 1); card.classList.remove("done"); }
+  save();
+  updateProgress(true);
+}
+
+function updateProgress(animate){
+  const s = S(), p = P(), n = p.days[s.day].items.length, d = doneList().length;
+  const pct = n ? Math.round(d / n * 100) : 0;
+  $("ringVal").style.strokeDashoffset = RING_C * (1 - pct / 100);
+  $("topProg").style.width = pct + "%";
+  const fill = $("cycle").children[s.day]?.querySelector(".fill");
+  if(fill) fill.style.width = pct + "%";
+  countTo(pct, animate);
+  if(animate && pct === 100){ const r = $("ring"); r.classList.remove("full"); void r.offsetWidth; r.classList.add("full"); }
+
+  const cta = $("cta");
+  const left = n - d;
+  cta.classList.toggle("ready", left === 0);
+  cta.textContent = left === 0 ? `COMPLETE DAY ${s.day + 1}` : `${left} TO GO`;
+  $("skip").style.display = left === 0 ? "none" : "block";
+}
+
+let countRaf;
+function countTo(target, animate){
+  cancelAnimationFrame(countRaf);
+  if(!animate){ $("pct").textContent = target + "%"; shownPct = target; return; }
+  const from = shownPct, t0 = performance.now(), dur = 450;
+  const step = now => {
+    const k = Math.min(1, (now - t0) / dur), v = Math.round(from + (target - from) * (1 - Math.pow(1 - k, 3)));
+    $("pct").textContent = v + "%";
+    if(k < 1) countRaf = requestAnimationFrame(step); else shownPct = target;
+  };
+  countRaf = requestAnimationFrame(step);
+}
+
+function swapRender(){
+  const app = $("app");
+  app.classList.add("swap");
+  setTimeout(() => { renderAll(); window.scrollTo({ top:0 }); app.classList.remove("swap"); }, 200);
+}
+
+function sessionsThisWeek(){
+  const now = new Date(); const monday = new Date(now);
+  monday.setHours(0,0,0,0); monday.setDate(now.getDate() - ((now.getDay() + 6) % 7));
+  return (S().dates || []).filter(t => t >= monday.getTime()).length;
+}
+
+/* ---------- finishing a day ---------- */
+function finishDay(){
+  const p = P(), s = S(), n = p.days[s.day].items.length;
+  const pct = pctOf(s.day);
+  const finished = s.day;
+  s.sessions += 1;
+  if(pct === 100) s.full = (s.full || 0) + 1;
+  s.dates = (s.dates || []).concat(Date.now()).slice(-120);
+  s.done[String(finished)] = [];                 // clear so the day starts fresh next cycle
+  s.day = (finished + 1) % p.days.length;
+  save();
+
+  const cycleDone = s.day === 0;
+  $("celeNum").textContent = String(finished + 1).padStart(2, "0");
+  $("celeTitle").innerHTML = pct === 100 ? `DAY ${finished + 1} <span>CRUSHED</span>` : `DAY ${finished + 1} <span>LOGGED</span>`;
+  $("celeSub").textContent = cycleDone
+    ? `Full cycle complete. That's ${Math.floor(s.sessions / p.days.length)} cycle${s.sessions / p.days.length >= 2 ? "s" : ""} of ${p.badge} in the bank.`
+    : (pct === 100 ? "Every exercise done. Recover well." : `${pct}% done — logged and moving on.`);
+  $("celeStats").innerHTML = `
+    <div><b>${pct}%</b><small>TODAY</small></div>
+    <div><b>${s.sessions}</b><small>SESSIONS</small></div>
+    <div><b>${sessionsThisWeek()}</b><small>THIS WEEK</small></div>`;
+  $("celeNext").textContent = `Day ${s.day + 1} · ${p.days[s.day].title}`;
+  $("celebrate").classList.add("open");
+  if(pct === 100) confetti();
+}
+$("cta").onclick = () => { if(doneList().length === P().days[S().day].items.length) finishDay(); };
+$("skip").onclick = () => { if(confirm("Finish this day with some exercises not done?")) finishDay(); };
+$("celeGo").onclick = () => { $("celebrate").classList.remove("open"); swapRender(); };
+
+/* ---------- confetti (tiny, no library) ---------- */
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const cv = $("confetti"), ctx = cv.getContext("2d"), dpr = window.devicePixelRatio || 1;
+  cv.width = innerWidth * dpr; cv.height = innerHeight * dpr; ctx.scale(dpr, dpr);
+  const cols = ["#FF2E63","#FF8A3D","#FFD23D","#FFFFFF","#3DD6FF","#B57BFF"];
+  const parts = Array.from({ length: 110 }, () => ({
+    x: innerWidth / 2 + (Math.random() - .5) * 60, y: innerHeight * .38,
+    vx: (Math.random() - .5) * 11, vy: -Math.random() * 12 - 4,
+    w: 5 + Math.random() * 6, h: 8 + Math.random() * 8, r: Math.random() * 6, vr: (Math.random() - .5) * .35,
+    c: cols[(Math.random() * cols.length) | 0]
+  }));
+  const t0 = performance.now();
+  (function tick(now){
+    const t = now - t0;
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    parts.forEach(q => {
+      q.vy += .32; q.vx *= .99; q.x += q.vx; q.y += q.vy; q.r += q.vr;
+      ctx.save(); ctx.translate(q.x, q.y); ctx.rotate(q.r);
+      ctx.globalAlpha = Math.max(0, 1 - t / 2200);
+      ctx.fillStyle = q.c; ctx.fillRect(-q.w / 2, -q.h / 2, q.w, q.h * Math.abs(Math.cos(q.r)));
+      ctx.restore();
+    });
+    if(t < 2200) requestAnimationFrame(tick); else ctx.clearRect(0, 0, innerWidth, innerHeight);
+  })(t0);
+}
+
+/* ---------- menu sheet ---------- */
+function openSheet(){ renderSheet(); $("overlay").classList.add("open"); $("sheet").classList.add("open"); }
+function closeSheet(){ $("overlay").classList.remove("open"); $("sheet").classList.remove("open"); }
+$("menuBtn").onclick = openSheet;
+$("verPill").onclick = openSheet;
+$("overlay").onclick = closeSheet;
+
+function renderSheet(){
+  const v = $("versions"); v.innerHTML = "";
+  PROGRAMS.forEach(p => {
+    const st = state.prog[p.id];
+    const b = document.createElement("button");
+    b.className = "ver" + (p.id === state.active ? " active" : "");
+    b.innerHTML = `<div class="ver-badge">${esc(p.badge)}</div>
+      <div class="ver-txt"><b>${esc(p.name)}</b><small>${esc(p.desc)}</small>
+      <em>${st.sessions} sessions · on Day ${(st.day % p.days.length) + 1} of ${p.days.length}</em></div>`;
+    b.onclick = () => {
+      if(p.id === state.active){ closeSheet(); return; }
+      state.active = p.id; save(); closeSheet(); swapRender();
+    };
+    v.appendChild(b);
+  });
+  $("rules").innerHTML = P().rules.map(([k, t]) => `<div><b>${esc(k)}</b> — ${esc(t)}</div>`).join("");
+  $("resetBtn").textContent = `Reset ${P().badge} progress`;
+}
+$("resetBtn").onclick = () => {
+  if(confirm(`Reset all ${P().badge} progress (day, checkmarks, session count)? Other versions are untouched.`)){
+    state.prog[state.active] = freshProg(); save(); closeSheet(); swapRender();
+  }
+};
+
+/* ---------- icons ---------- */
+const ICON = {
+  flame:`<svg viewBox="0 0 24 24" fill="none"><path d="M12 2c1 3.5 5 6 5 11a5 5 0 01-10 0c0-2.2 1-3.8 2.3-5 .2 1.6 1 2.7 2.2 3.2C11 8.5 11 5 12 2z" fill="url(#fg)"/><defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#FF2E63"/></linearGradient></defs></svg>`,
+  loop:`<svg viewBox="0 0 24 24" fill="none" stroke="#A3A3B2" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0114-5.3L20 9M20 4v5h-5M20 12a8 8 0 01-14 5.3L4 15M4 20v-5h5"/></svg>`,
+  cal:`<svg viewBox="0 0 24 24" fill="none" stroke="#A3A3B2" stroke-width="2.2" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>`
+};
+
+renderAll();
 </script>
 </body>
 </html>
